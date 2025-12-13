@@ -11,7 +11,7 @@
 //     ─▀█────██▀█▀██────█▀──     
 //
 //*************************************
-//git test
+
 //#include OA/Modules/Durability.oajs
 //#include OA/Modules/Looter.oajs
 //#include OA/Modules/EventController.js
@@ -222,7 +222,7 @@ function GUIThrower(){
 	g.SetCallback('OnClick');
 	const width = 8;
 	const cellSize = 35;
-	const height = 12;
+	const height = 18;
 	const color = 2769;
 	for (var y = 0; y < height; ++y) {
 	for (var x = 0; x < width; ++x) {
@@ -312,7 +312,16 @@ function GUIThrower(){
 		g.AddButton(6009, 25, prompt + 35, '2111', '2112', '2113', '0');
 		g.AddText(90, prompt + 38, '0x0035', 'Move Client B');
 		prompt +=30
-		//g.AddText(60, prompt+5, GetColorStatus('AutoEoO'), 'Enemy of One');
+		
+    g.AddButton(8001, 25, prompt + 35, '0x758B', '0x758B', '0x758B', '0');
+    g.AddText(90, prompt + 38, '0x0035', 'Stoneform ClientB');
+    prompt +=30
+
+    
+    
+    
+    
+    //g.AddText(60, prompt+5, GetColorStatus('AutoEoO'), 'Enemy of One');
 		//g.AddButton(1003, 25, prompt, GetCheckboxStatus("AutoEoO"), GetCheckboxStatus("AutoEoO"), GetCheckboxStatus("AutoEoO"), '');  		
 		//prompt+=30			
 		
@@ -788,7 +797,10 @@ function OnClick(){
         case 6009:
         moveB();
 		break;
-		
+		case 8001:
+      Orion.UdpSend('127.0.0.1', 12346, 'stone_form');
+		  break;
+      
 		case 868686:
 
 			break;
