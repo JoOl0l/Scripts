@@ -1,0 +1,411 @@
+function StartSupportServer() {
+    Orion.RemoveAllUdpServers();
+    var serverName = 'support_server';
+    var port = 12346;
+
+    var result = Orion.CreateUdpServer(serverName, port);
+    if (result !== 0) {
+        Orion.Print('❌ Failed to start support server. Error: ' + result);
+        return;
+    }
+
+    Orion.Print('🛡 Support server started on port ' + port);
+
+    while (true) {
+        // --- 1. Listen for messages ---
+        var msg = Orion.UdpRecv(serverName);
+        if (msg) {
+            HandleUdpMessage(msg);
+        }
+
+        // --- 2. Process discord loop ---
+        ProcessDiscordLoop();
+        
+      
+        
+        ProcessBardMastery();
+        // --- 3. Send idle status if no loop is running ---
+        //ProcessIdleStatus();
+       
+        Orion.Wait(100);
+    }
+}
+
+// -------------------- Message Handler --------------------
+
+function HandleUdpMessage(msg) {
+    var parts = msg.split(':');
+    var command = parts[0];
+    var payload = parts[1];
+    Orion.Print('🔍 Command: ' + command);      // Add this
+    Orion.Print('📦 Payload: ' + payload); 
+    switch (command) {
+        case 'invis_me':
+            SupportCast('Invisibility', payload);
+            break;
+        
+        case 'heal_me':
+            SupportCast('Greater Heal', payload);
+            break;
+       
+        case 'cure_me':
+            SupportCast('Arch Cure', payload);
+            break;
+       
+        case 'invis_self':
+            SupportCast('Invisibility', Player.Serial());
+            break;
+        
+        case 'discord_start':
+            Orion.SetGlobal('discordLoopActive', 'true');
+            Orion.SetGlobal('discordTarget', payload);
+            Orion.SetGlobal('lastDiscordAttempt', Orion.Now() - 12000); // Force immediate
+            break;
+        
+        case 'discord_stop':
+            Orion.SetGlobal('discordLoopActive', 'false');
+            break;
+        
+        case 'follow_start':
+            var master = Orion.FindObject(payload);
+            if (master) {
+                Orion.Follow(master.Serial(), true);
+                Orion.Print('👣 Started following ' + master.Name());
+            }
+            break;
+         
+         case 'bmastery_mstart':
+         Orion.SetGlobal('bardMasteryActive', 'true');
+         Orion.Print('Intialize Bard Masteries');
+         break;
+         
+         case 'bmastery_mstop':
+         Orion.SetGlobal('bardMasteryActive', 'false');
+         Orion.Print('Stop Bard Mastery Loop');
+         break;
+        
+        case 'xheal_start':
+        if (Orion.ScriptRunning('CrossHeal')){
+        Orion.ToggleScript('CrossHeal');
+        Orion.Print('CROSS HEAL OFF');
+        return;
+        }
+        Orion.Print('Starting Xheal Loop');
+        Orion.ToggleScript('CrossHeal');
+        Orion.Wait(100);
+        break;
+        case 'auto_provo':
+        if (Orion.ScriptRunning('AutoProvo')){
+        Orion.ToggleScript('AutoProvo');
+        Orion.Print('Ending Auto Provo');
+        return;
+        }
+        Orion.Print('Auto Provo Activated');
+        Orion.ToggleScript('AutoProvo');
+        Orion.Wait(100);
+        break;
+        
+        case 'disco_nearest':
+        if (Orion.ScriptRunning('discoNearest')){
+        Orion.ToggleScript('discoNearest');
+        Orion.Print('Stopping Discord Near Loop');
+        Orion.SayParty('Discord Near Loop Stopped');
+        Orion.Wait(100);
+        }else{
+        Orion.ToggleScript('discoNearest');
+        Orion.Print('Starting Discord Nearest Loop');
+        Orion.SayParty('Starting Discord Nearest Loop');
+        }
+        Orion.Wait(100);
+        break;
+        
+        case 'move_b':
+         walkCoordinates(payload);
+         
+         break;
+         
+       
+        case 'follow_stop':
+            Orion.Follow(Player.Serial(), false);
+            Orion.Turn('east');
+            Orion.Turn('west');
+            Orion.Print('🛑 Stopped following');
+            break;
+        default:
+            Orion.Print('📨 Unknown command received: ' + msg);
+            break;
+    }
+}
+
+// -------------------- Bard Loop --------------------
+
+function ProcessDiscordLoop() {
+    if (Orion.GetGlobal('discordLoopActive') !== 'true') {
+        return;
+    }
+
+    var targetSerial = Orion.GetGlobal('discordTarget');
+    var target = Orion.FindObject(targetSerial);
+    if (!target) {
+        SendDiscordStatus('⚠️ Target not found');
+        return;
+    }
+
+    if (target.Distance() > 12) {
+        SendDiscordStatus('🚫 Target out of range');
+        return;
+    }
+
+    var lastAttempt = parseInt(Orion.GetGlobal('lastDiscordAttempt') || '0');
+    if (Orion.Now() - lastAttempt < 12000) {
+        return;
+    }
+
+    Orion.SetGlobal('lastDiscordAttempt', Orion.Now());
+
+    // Attempt Discord
+    Orion.ClearJournal();
+    Orion.UseSkill('Discordance');
+    Orion.WaitTargetObject(targetSerial);
+    Orion.Wait(500);
+
+    // Check results
+    if (Orion.InJournal('already in discord') !== -1 || Orion.InJournal('jarring') !== -1) {
+        SendDiscordStatus('✅ Discord successful');
+        Orion.SetGlobal('discordLoopActive', 'false');
+    } else if (Orion.InJournal('song of discordance') !== -1) {
+        SendDiscordStatus('❌ Discord failed');
+    } else {
+        SendDiscordStatus('❓ No response');
+    }
+
+}
+
+function ProcessBardMastery() {
+    if (Orion.GetGlobal('bardMasteryActive') !== 'true'){
+    return;
+    }
+  //  var bardSkill = Shared.GetVar('Peacemaking');
+   
+        if ( !Orion.BuffExists('perseverance') && Player.Mana() > 25) {
+            Orion.Cast('Perseverance');
+            Orion.Wait(5000);
+        }
+        if (!Orion.BuffExists('resilience') && Player.Mana() > 25) {
+            Orion.Cast('Resilience');
+            Orion.Wait(5000);
+        }
+       // if (bardSkill == 'Provocation' && !Orion.BuffExists('inspire') && Player.Mana() > 25) {
+            //Orion.Cast('inspire');
+         //   Orion.Wait(5000);
+      //  }
+       // if (bardSkill == 'Provocation' && !Orion.BuffExists('invigorate') && Player.Mana() > 25) {
+            //Orion.Cast('invigorate');
+            //Orion.Wait(5000);
+       // }
+        Orion.Wait(100);
+    }
+
+function walkCoordinates(payload) {
+    Orion.Print('🚚 Payload received in walkCoordinates: "' + payload + '"');
+
+    var parts = payload.trim().split(' '); // ['988', '512', '-30']
+    Orion.Print('🔧 Split parts: ' + JSON.stringify(parts));
+
+    if (parts.length < 2) {
+        Orion.Print('❌ Invalid coordinate payload: ' + payload);
+        return;
+    }
+
+    var x = parseInt(parts[0]);
+    var y = parseInt(parts[1]);
+    var z = parts[2] ? parseInt(parts[2]) : 0;
+
+    Orion.Print('🧮 Parsed coords — X: ' + x + ', Y: ' + y + ', Z: ' + z);
+
+    if (isNaN(x) || isNaN(y)) {
+        Orion.Print('❌ Could not parse coordinates — check message format');
+        return;
+    }
+
+    Orion.SayParty('Walking to: [' + x + ', ' + y + ', ' + z + ']');
+    Orion.CharPrint('self', 92, '🚶 Walking to: [' + x + ', ' + y + ', ' + z + ']');
+    Orion.WalkTo(x, y, z, 1, 255, 1, 1, 25000);
+}
+
+
+// -------------------- Idle Feedback --------------------
+
+//var _lastIdleStatusTime = 0;
+
+//function ProcessIdleStatus() {
+  //  if (Orion.GetGlobal('discordLoopActive') === 'true') return;
+
+   // if (Orion.Now() - _lastIdleStatusTime >= 2000) {
+      //  SendDiscordStatus('⏳ Waiting for command');
+       // _lastIdleStatusTime = Orion.Now();
+  //  }
+//}
+
+// -------------------- Utilities --------------------
+
+function SupportCast(spellName, targetSerial) {
+var target = Orion.FindObject(targetSerial);
+if (!Orion.InLOS(targetSerial)){
+    Orion.Print('out of LOS');
+    return;
+    }
+ if (target.Distance() > 12 ) {
+        SendCastStatus('🚫 Target out of range');
+        return;
+    }
+
+    //Orion.UdpSend('127.0.0.1', 12347, 'casting' + spellName + 'on' + targetSerial);
+    Orion.Print('🪄 Casting ' + spellName + ' on ' + targetSerial);
+    Orion.SayParty('Casting ' + spellName + ' on ' + Orion.RequestName(targetSerial));
+    Orion.Cast(spellName);
+    Orion.WaitTargetObject(targetSerial);
+    Orion.Wait(200);
+}
+
+
+function discoNearest() {
+    while (!Player.Dead()) {
+        Orion.UseIgnoreList('DiscoList');
+        var mobs = Orion.FindTypeEx(any, any, ground, 'mobile', 10, "red|gray|enemy").sort(function (a, b) {
+            return Orion.GetDistance(a.Serial()) - Orion.GetDistance(b.Serial());
+        });
+        Orion.ResetIgnoreList();
+        var target = mobs[0];
+        if (target) {
+            Orion.UseType('0x0E9D|0x0E9C|0x0EB2|0x0EB3');
+            Orion.Print("Using Discordance on " + mobs[0].Name() + " " + mobs[0].Distance() + " tiles away");
+           Orion.SayParty("Using Discordance on " + mobs[0].Name() + " " + mobs[0].Distance() + " tiles away");
+            Orion.UseSkill('Discordance');
+            Orion.WaitTargetObject([target.Serial()]);
+            Orion.Wait(100);
+            Orion.Print("Ignoring " + mobs[0].Name());
+            Orion.AddIgnoreListObject('DiscoList', [target.Serial()]);
+            Orion.Wait(7500);
+        } else {
+            Orion.Print("Clearing ignore list");
+            Orion.ClearIgnoreList('DiscoList');
+            Orion.Wait(10000);
+        }
+    }
+}
+
+function AutoProvo() {
+    while (!Player.Dead()) {
+        Orion.UseIgnoreList('ProvoList');
+        var mob = Orion.FindTypeEx(any, any, ground, 'mobile', 13, 'red|gray|criminal').sort(function (a, b) {
+            return Orion.GetDistance(a.Serial()) - Orion.GetDistance(b.Serial());
+        });
+
+        for (var i = 0; i < mob.length; i += 2) {
+            if (!mob[i] || !mob[i + 1]) {
+                break;
+            }
+
+            var xDiff = mob[i + 1].X() - mob[i].X();
+            var yDiff = mob[i + 1].Y() - mob[i].Y();
+            var mobRelativeDistance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+            var playerDistanceOne = mob[i].Distance();
+            var playerDistanceTwo = mob[i + 1].Distance();
+            var target = mob[0];
+            var target2 = mob[1];
+
+            if (mobRelativeDistance < 12 && playerDistanceOne < 12 && playerDistanceTwo < 12) {
+                Orion.UseType('0x0E9D|0x0E9C|0x0EB2|0x0EB3');
+                Orion.CharPrint(mob[i].Serial(), 1153, 'Inciting');
+                Orion.CharPrint(mob[i + 1].Serial(), 1153, 'Onto');
+                Orion.SayParty(mob[i].Serial(), 1153, 'Inciting');
+                Orion.SayParty(mob[i + 1].Serial(), 1153, 'Onto');
+                Orion.WaitTargetObject([mob[i].Serial(), mob[i + 1].Serial()]);
+                Orion.UseSkill('22');
+                Orion.Wait(100);
+                Orion.Print("Ignoring " + mob[0].Name());
+                Orion.AddIgnoreListObject('ProvoList', [target.Serial()]);
+                Orion.Print("Ignoring " + mob[1].Name());
+                Orion.AddIgnoreListObject('ProvoList', [target2.Serial()]);
+                Orion.Wait(7500);
+                if (Orion.Timer("ProvoTimer") >= 45000) {
+                    Orion.Print("Clearing ignore list");
+                    Orion.ClearIgnoreList('ProvoList');
+                    Orion.RemoveTimer('ProvoTimer');
+                }
+                if (Orion.TimerExists('ProvoTimer') && Orion.Timer("ProvoTimer") <= 45000) {
+                    // timer already exists
+                } else {
+                    Orion.SetTimer('ProvoTimer', 0);
+                    Orion.AddDisplayTimer('1', 45000, 'RightTop', 'bar', 'Provoke Ignore List Reset', -85, 10, '0', '-1');
+                }
+            }
+            Orion.Wait(1000);
+        }
+        Orion.Wait(100);
+    }
+}
+
+function CrossHeal() {
+    if (Orion.SkillValue("Magery") < 7500) {
+        //Orion.Print(1191, "[CrossHeal] Script Started");
+       while (!Player.Dead()) {
+           
+           
+            Orion.Wait(100);
+
+            if (Player.Poisoned() && Player.Hits('%') < 80) {
+                Orion.SayParty('Curing Myself');
+                Orion.Cast('Cure');
+                Orion.WaitTargetObject(Player.Serial());
+                Orion.Wait(2000);
+                continue;
+            } else if (Player.Hits('%') < 60) {
+                Orion.SayParty('Casting Heal on Self');
+                Orion.Cast('Greater Heal');
+                Orion.WaitTargetObject(Player.Serial());
+                Orion.Wait(2000);
+                continue;
+            }
+
+            var friends = Orion.FindTypeEx(-1, -1, 'ground', 'human|inlos|live', 10, 'green');
+            for (var i = 0; i < friends.length; i++) {
+                var friendSerial = friends[i].Serial();
+                if (friendSerial === Player.Serial())
+                    continue;
+
+                var friend = Orion.FindObject(friendSerial);
+                if (!friend || Orion.GetDistance(friendSerial) > 10)
+                    continue;
+
+                Orion.ShowStatusbar(friendSerial, 550, 200);
+                Orion.Wait(50);
+                Orion.GetStatus(friendSerial);
+                Orion.Wait(50);
+
+                if (friend.Poisoned() && friend.Hits('%') < 60) {
+                   Orion.SayParty('Casting Cure on:' + friendSerial);
+                    Orion.Cast('Cure');
+                    while (Player.Frozen()) {
+                        Orion.Wait(100);
+                    }
+                    Orion.WaitTargetObject(friendSerial);
+                    Orion.Wait(1500);
+                } else if (friend.Hits('%') < 70) {
+                   Orion.SayParty('Casting Greater Heal on:' + friendSerial);
+                    Orion.Cast('Greater Heal');
+                    while (Player.Frozen()) {
+                        Orion.Wait(100);
+                    }
+                    Orion.WaitForTarget(4000);
+                    Orion.WaitTargetObject(friendSerial);
+                    Orion.Wait(1500);
+                }
+            }
+            Orion.Wait(500);
+            //Orion.CloseStatusbar('all');
+            Orion.Wait(300);
+        }
+    }
+}
