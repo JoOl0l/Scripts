@@ -269,9 +269,9 @@ function GUIThrower(){
 		prompt+=10  		
 								
 		 g.AddText(90, prompt, '0x08A5', 'Invis Me-->You');
-		 g.AddButton(6000, 25, prompt, '0x850', '0x851', '0x852', '0');
+		 g.AddButton(6000, 25, prompt, '30040', '30040', '30040', '0');
 		
-		g.AddButton(6001, 200, prompt, '0x850', '0x851', '0x852', '0');
+		g.AddButton(6001, 200, prompt, '30040', '30040', '30040', '0');
         	
          g.AddText(90, prompt + 30, '0x08A5', 'Follow --- Stop');
 		 g.AddButton(6002, 25, prompt + 30, '0x83F', '0x840', '0x841', '0');
@@ -317,8 +317,15 @@ function GUIThrower(){
     g.AddText(90, prompt + 38, '0x0035', 'Stoneform ClientB');
     prompt +=30
 
-    g.AddButton(8002, )
+    g.AddButton(8002, 25, prompt + 35, '30028', '30028', '30028', '0' );
+    g.AddText(90, prompt + 38, '0x0035', 'Mount Up');
+    prompt +=30
     
+    
+    
+    
+
+
     
     
     //g.AddText(60, prompt+5, GetColorStatus('AutoEoO'), 'Enemy of One');
