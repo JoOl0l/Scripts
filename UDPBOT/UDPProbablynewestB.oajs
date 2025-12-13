@@ -127,7 +127,10 @@ function HandleUdpMessage(msg) {
          case 'stone_form':
             SupportCast('Stone Form', 'any');
             break;
-            
+         
+        case 'mount_up':
+            mountUp();
+            break;
        
         case 'follow_stop':
             Orion.Follow(Player.Serial(), false);
@@ -350,6 +353,23 @@ function AutoProvo() {
         Orion.Wait(100);
     }
 }
+
+function mountUp(){
+    if (Player.Followers() < 1){
+        var ethy = Orion.FindObject('0x43CD6A14');
+        Player.SayParty('Mounting :' ethy);
+        Orion.UseObject(ethy);
+        if (Player.Frozen()){
+            Orion.Wait(50);
+        }
+       }
+    else{
+        Player.SayParty('Already Mounted');
+        Orion.Wait(100)
+    }
+        Orion.Wait(500);
+}
+    
 
 function CrossHeal() {
     if (Orion.SkillValue("Magery") < 7500) {
