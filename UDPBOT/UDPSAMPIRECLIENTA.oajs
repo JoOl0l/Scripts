@@ -804,14 +804,15 @@ function OnClick(){
         case 6009:
         moveB();
 		break;
+		
 		case 8001:
-    UpdateGUIStatus('Requesting Stoneform');  
-    Orion.UdpSend('127.0.0.1', 12346, 'stone_form');
+        UpdateGUIStatus('Requesting Stoneform');  
+        Orion.UdpSend('127.0.0.1', 12346, 'stone_form');
 		  break;
     
-      case 8002:
-      UpdateGUIStatus('Regulators, Mount up');
-      Orion.UdpSend('127.0.0.1', 12346, 'mount_up');
+        case 8002:
+        UpdateGUIStatus('Regulators, Mount up');
+        Orion.UdpSend('127.0.0.1', 12346, 'mount_up');
         break;
 
 		case 868686:

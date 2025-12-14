@@ -125,7 +125,7 @@ function HandleUdpMessage(msg) {
          break;
         
          case 'stone_form':
-            SupportCast('Stone Form', 'any');
+            SupportCast('Stone Form', Player.Serial());
             break;
          
         case 'mount_up':
@@ -353,23 +353,32 @@ function AutoProvo() {
         Orion.Wait(100);
     }
 }
-
-function mountUp(){
-    if (Player.Followers() < 1){
-        var ethy = Orion.FindObject('0x43CD6A14');
-        Player.SayParty('Mounting :' ethy);
-        Orion.UseObject(ethy);
-        if (Player.Frozen()){
-            Orion.Wait(50);
-        }
-       }
-    else{
-        Player.SayParty('Already Mounted');
-        Orion.Wait(100)
+function mountUp() {
+    if (Orion.BuffExists('Stone Form')) {
+        Orion.SayParty('I am in Stone Form and can not mount');
+        return;
     }
-        Orion.Wait(500);
+
+    if (Player.Followers() < 1) {
+        var ethy = Orion.FindObject('0x43CD6A14');
+        if (ethy) {
+            Orion.SayParty('Mounting ' + ethy.Name());
+            Orion.UseObject(ethy.Serial());
+            if (Player.Frozen()) {
+                Orion.Wait(50);
+            }
+        } else {
+            Orion.SayParty('Mount failed: ethereal not found');
+        }
+    } else {
+        Orion.SayParty('Already Mounted');
+        Orion.Wait(100);
+    }
+
+    Orion.Wait(500);
+    return;
 }
-    
+
 
 function CrossHeal() {
     if (Orion.SkillValue("Magery") < 7500) {
