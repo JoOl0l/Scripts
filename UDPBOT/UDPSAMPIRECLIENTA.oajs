@@ -170,16 +170,23 @@ function GUISampire(){
 		g.AddText(60, prompt+5, GetColorStatus('AutoSecondary'), 'Auto Secondary Attack');
 		g.AddButton(1014, 25, prompt, GetCheckboxStatus("AutoSecondary"), GetCheckboxStatus("AutoSecondary"), GetCheckboxStatus("AutoSecondary"), '');  		
 		prompt+=30
+		
 		g.AddText(60, prompt+5, GetColorStatus('AutoSmartSpecial'), 'Smart Special Move');
-g.AddButton(1000, 25, prompt, GetCheckboxStatus("AutoSmartSpecial"), GetCheckboxStatus("AutoSmartSpecial"), GetCheckboxStatus("AutoSmartSpecial"), '');
-prompt += 30;
+        g.AddButton(1000, 25, prompt, GetCheckboxStatus("AutoSmartSpecial"), GetCheckboxStatus("AutoSmartSpecial"), GetCheckboxStatus("AutoSmartSpecial"), '');
+        prompt += 30
 			
 		g.AddLine(53.5, prompt+5, 233.5, prompt+5, 'white', 2)//0 to 285		
 		prompt+=10  
   			
 		g.AddText(60, prompt+5, GetColorStatus('AutoSampire'), "Auto Attack");
 		g.AddButton(1099, 25, prompt, GetCheckboxStatus("AutoSampire"), GetCheckboxStatus("AutoSampire"), GetCheckboxStatus("AutoSampire"), '');  
+       
+        
+        g.AddText(60, prompt+30, GetColorStatus('AutoOnslaught'), "Auto Onslaught");
+        g.AddButton(9000, 25, prompt+30, GetCheckboxStatus("AutoOnslaught"), GetCheckboxStatus("AutoOnslaught"), GetCheckboxStatus("AutoOnslaught"), '');
 
+		
+		
 		if (Shared.GetVar('useLootCorpses') == 'True'){
 			g.AddText(190, prompt+5, 25, "Auto Loot");		
 			g.AddButton(4999, 155, prompt, '0x2602', '0x2602', '0x2602', '');  											
@@ -815,6 +822,12 @@ function OnClick(){
         Orion.UdpSend('127.0.0.1', 12346, 'mount_up');
         break;
 
+        case 9000:
+         Orion.ToggleScript('AutoOnslaught');
+         Orion.Wait(100);
+         GUI();
+          break;
+          
 		case 868686:
 
 			break;
@@ -929,10 +942,10 @@ function AutoSmartSpecial() {
         var enemies = Orion.FindTypeEx('any', 'any', 'ground', targetFlags, 3, MobNoto);
         Orion.Print('Enemies nearby: ' + enemies.length);
 
-           if (enemies.length >= 2 && !Orion.AbilityStatus('Secondary') && Player.Mana() > 30) {
+           if (enemies.length >= 2 && !Orion.AbilityStatus('Secondary') && !Orion.SpellStatus('Onslaught') && Player.Mana() > 30) {
             Orion.UseAbility('Secondary');
             UpdateGUIStatus('Using Secondary (multi-target)');
-             } else if (enemies.length < 2 && !Orion.AbilityStatus('Primary') && Player.Mana() > 30) {
+             } else if (enemies.length < 2 && !Orion.AbilityStatus('Primary') && !Orion.SpellStatus('Onslaught') && Player.Mana() > 30) {
             Orion.UseAbility('Primary');
             UpdateGUIStatus('Using Primary (single-target)');
         }
@@ -940,6 +953,31 @@ function AutoSmartSpecial() {
         Orion.Wait(1000);
     }
 }
+
+function AutoOnslaught() {
+    Orion.SetTimer('OnsTimer');
+    while (!Player.Dead()) {
+        if (Player.Mana() > 6 && Player.WarMode() && !Orion.SpellStatus('Onslaught') && Orion.Timer('OnsTimer') > 10000) {
+            
+        //if (Orion.WaitJournal('You deliver an onslaught of sword strikes!', Orion.Now(), 5000)){
+            //if (!Orion.TimerExists('OnsTimer') || Orion.Timer('OnsTimer') > 8000) {
+                Orion.ClearJournal();
+                Orion.Cast('Onslaught');
+                Orion.WaitJournal('You deliver an onslaught of sword strikes!', Orion.Now(), 100000); 
+                Orion.SetTimer('OnsTimer'); 
+                Orion.Print('SMASHHHH');
+                    UpdateGUIStatus('Onslaught Landed');
+                
+                    //UpdateGUIStatus('Onslaught Missed or Delayed');
+                }
+            }
+        
+
+        Orion.Wait(500);
+    }
+
+
+
 function AutoEoO(){
 	while (!Player.Dead()){
         var arr = Orion.FindTypeEx(targetGraphics, 'any', 'ground', targetFlags, targetRange, targetNoto)

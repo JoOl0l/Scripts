@@ -419,7 +419,7 @@ function CrossHeal() {
 
                 if (friend.Poisoned() && friend.Hits('%') < 60) {
                    Orion.SayParty('Casting Cure on:' + friendSerial);
-                    Orion.Cast('Cure');
+                    Orion.Cast('Cleansing Winds');
                     while (Player.Frozen()) {
                         Orion.Wait(100);
                     }
