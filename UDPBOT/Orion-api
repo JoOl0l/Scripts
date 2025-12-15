@@ -167,6 +167,27 @@ var Orion = {
   FindType: function (itemType, color, container, recurse) {},
 
   /**
+ * Finds items by type, color, and container, with extended filters.
+ * @param {string} type - Graphic ID (e.g., '0x0EED' for gold)
+ * @param {string} color - Color ID (e.g., '0x0000' for any color, '0x0481' for specific)
+ * @param {string} container - Container alias or serial (e.g., 'backpack', 'ground', or a corpse serial)
+ * @param {boolean} recurse - Whether to search recursively inside subcontainers
+ * @param {number} scanDistance - How far to scan (0 = only container, 1+ = tile range)
+ * @param {number} minZ - Minimum Z level to include
+ * @param {number} maxZ - Maximum Z level to include
+ * @returns {Array<Object>} - Array of found item objects, each with .Serial(), .Name(), .X(), .Y(), .Z(), etc.
+ */
+FindTypeEx: function (
+  type,
+  color,
+  container,
+  recurse,
+  scanDistance,
+  minZ,
+  maxZ
+) {},
+
+  /**
    * Moves an item.
    * @param {string} serial
    * @param {number} amount

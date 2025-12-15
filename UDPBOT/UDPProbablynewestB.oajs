@@ -154,12 +154,14 @@ function ProcessDiscordLoop() {
     var targetSerial = Orion.GetGlobal('discordTarget');
     var target = Orion.FindObject(targetSerial);
     if (!target) {
-        SendDiscordStatus('⚠️ Target not found');
+        Orion.SayParty('Target not found');
+        
         return;
     }
 
     if (target.Distance() > 12) {
-        SendDiscordStatus('🚫 Target out of range');
+        Orion.SayParty('Target out of range');
+        
         return;
     }
 
@@ -178,12 +180,15 @@ function ProcessDiscordLoop() {
 
     // Check results
     if (Orion.InJournal('already in discord') !== -1 || Orion.InJournal('jarring') !== -1) {
-        SendDiscordStatus('✅ Discord successful');
+        Orion.SayParty('Discord Successful');
         Orion.SetGlobal('discordLoopActive', 'false');
+        Orion.SayParty('Ending Discord Loop');
     } else if (Orion.InJournal('song of discordance') !== -1) {
-        SendDiscordStatus('❌ Discord failed');
+        Orion.SayParty('Discord attempt failed');
+        
     } else {
-        SendDiscordStatus('❓ No response');
+        Orion.SayParty('No response');
+        
     }
 
 }
@@ -386,7 +391,7 @@ function ReliableCrossHeal() {
         while (!Player.Dead()) {
             Orion.Wait(100);
 
-            // 🧪 Self Cure
+            //  Self Cure
             if (Player.Poisoned() && Player.Hits('%') < 80) {
                 Orion.SayParty('Curing Myself');
                 Orion.Cast('Cure');
@@ -397,7 +402,7 @@ function ReliableCrossHeal() {
                 continue;
             }
 
-            // 🧪 Self Heal
+            //  Self Heal
             else if (Player.Hits('%') < 60) {
                 Orion.SayParty('Casting Heal on Self');
                 Orion.Cast('Greater Heal');
@@ -408,7 +413,7 @@ function ReliableCrossHeal() {
                 continue;
             }
 
-            // 🧍‍♂️ Check party members nearby
+            //  Check party members nearby
             var friends = Orion.FindTypeEx(-1, -1, 'ground', 'human|inlos|live', 10, 'green');
             for (var i = 0; i < friends.length; i++) {
                 var friendSerial = friends[i].Serial();
@@ -424,8 +429,8 @@ function ReliableCrossHeal() {
                 Orion.GetStatus(friendSerial);
                 Orion.Wait(50);
 
-                // 🧪 Cross Cure
-                if (friend.Poisoned() && friend.Hits('%') < 100) {
+                //  Cross Cure Friend
+                if (friend.Poisoned() && friend.Hits('%') < 50) {
                     Orion.SayParty('Casting Cure on: ' + friend.Name());
                     Orion.Cast('Cleansing Winds');
                     while (Player.Frozen()) {
@@ -437,8 +442,8 @@ function ReliableCrossHeal() {
                     Orion.Wait(3500);
                 }
 
-                // 🧪 Cross Heal
-                else if (friend.Hits('%') < 100) {
+                //  Cross Heal Friend
+                else if (friend.Hits('%') < 70) {
                     Orion.SayParty('Casting Greater Heal on: ' + friend.Name());
                     Orion.Cast('Greater Heal');
                     while (Player.Frozen()) {
