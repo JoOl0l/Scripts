@@ -380,28 +380,35 @@ function mountUp() {
 }
 
 
-function CrossHeal() {
+function ReliableCrossHeal() {
     if (Orion.SkillValue("Magery") < 7500) {
         //Orion.Print(1191, "[CrossHeal] Script Started");
-       while (!Player.Dead()) {
-           
-           
+        while (!Player.Dead()) {
             Orion.Wait(100);
 
+            // 🧪 Self Cure
             if (Player.Poisoned() && Player.Hits('%') < 80) {
                 Orion.SayParty('Curing Myself');
                 Orion.Cast('Cure');
-                Orion.WaitTargetObject(Player.Serial());
-                Orion.Wait(2000);
-                continue;
-            } else if (Player.Hits('%') < 60) {
-                Orion.SayParty('Casting Heal on Self');
-                Orion.Cast('Greater Heal');
-                Orion.WaitTargetObject(Player.Serial());
+                if (Orion.WaitForTarget(3000)) {
+                    Orion.TargetObject(Player.Serial());
+                }
                 Orion.Wait(2000);
                 continue;
             }
 
+            // 🧪 Self Heal
+            else if (Player.Hits('%') < 60) {
+                Orion.SayParty('Casting Heal on Self');
+                Orion.Cast('Greater Heal');
+                if (Orion.WaitForTarget(3000)) {
+                    Orion.TargetObject(Player.Serial());
+                }
+                Orion.Wait(2000);
+                continue;
+            }
+
+            // 🧍‍♂️ Check party members nearby
             var friends = Orion.FindTypeEx(-1, -1, 'ground', 'human|inlos|live', 10, 'green');
             for (var i = 0; i < friends.length; i++) {
                 var friendSerial = friends[i].Serial();
@@ -417,28 +424,34 @@ function CrossHeal() {
                 Orion.GetStatus(friendSerial);
                 Orion.Wait(50);
 
-                if (friend.Poisoned() && friend.Hits('%') < 60) {
-                   Orion.SayParty('Casting Cure on:' + friendSerial);
+                // 🧪 Cross Cure
+                if (friend.Poisoned() && friend.Hits('%') < 100) {
+                    Orion.SayParty('Casting Cure on: ' + friend.Name());
                     Orion.Cast('Cleansing Winds');
                     while (Player.Frozen()) {
                         Orion.Wait(100);
                     }
-                    Orion.WaitTargetObject(friendSerial);
-                    Orion.Wait(1500);
-                } else if (friend.Hits('%') < 70) {
-                   Orion.SayParty('Casting Greater Heal on:' + friendSerial);
+                    if (Orion.WaitForTarget(3000)) {
+                        Orion.TargetObject(friendSerial);
+                    }
+                    Orion.Wait(3500);
+                }
+
+                // 🧪 Cross Heal
+                else if (friend.Hits('%') < 100) {
+                    Orion.SayParty('Casting Greater Heal on: ' + friend.Name());
                     Orion.Cast('Greater Heal');
                     while (Player.Frozen()) {
                         Orion.Wait(100);
                     }
-                    Orion.WaitForTarget(4000);
-                    Orion.WaitTargetObject(friendSerial);
-                    Orion.Wait(1500);
+                    if (Orion.WaitForTarget(3000)) {
+                        Orion.TargetObject(friendSerial);
+                    }
+                    Orion.Wait(2500);
                 }
             }
-            Orion.Wait(500);
-            //Orion.CloseStatusbar('all');
-            Orion.Wait(300);
+
+            Orion.Wait(800); // General cooldown to reduce spam
         }
     }
 }
