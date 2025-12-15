@@ -283,26 +283,52 @@ if (!Orion.InLOS(targetSerial)){
 
 function discoNearest() {
     while (!Player.Dead()) {
+        Orion.ClearJournal(); // Clear old journal lines at start of loop
         Orion.UseIgnoreList('DiscoList');
+
         var mobs = Orion.FindTypeEx(any, any, ground, 'mobile', 10, "red|gray|enemy").sort(function (a, b) {
             return Orion.GetDistance(a.Serial()) - Orion.GetDistance(b.Serial());
         });
+
         Orion.ResetIgnoreList();
+
         var target = mobs[0];
+
         if (target) {
             Orion.UseType('0x0E9D|0x0E9C|0x0EB2|0x0EB3');
-            Orion.Print("Using Discordance on " + mobs[0].Name() + " " + mobs[0].Distance() + " tiles away");
-           Orion.SayParty("Using Discordance on " + mobs[0].Name() + " " + mobs[0].Distance() + " tiles away");
+            Orion.Print("Using Discordance on " + target.Name() + " " + target.Distance() + " tiles away");
+            Orion.SayParty("Using Discordance on " + target.Name() + " " + target.Distance() + " tiles away");
+
             Orion.UseSkill('Discordance');
             Orion.WaitTargetObject([target.Serial()]);
-            Orion.Wait(100);
-            Orion.Print("Ignoring " + mobs[0].Name());
-            Orion.AddIgnoreListObject('DiscoList', [target.Serial()]);
-            Orion.Wait(7500);
+            Orion.Wait(500); // Give time for journal to update
+
+            // Wait up to 2 seconds for relevant messages to appear
+            Orion.WaitJournal("You play jarring|That creature is already in discord|You attempt to disrupt your target", Orion.Now(), 2000);
+
+            // Check for success
+            if (Orion.InJournal("You play jarring") !== -1) {
+                Orion.Print("✅ Discordance SUCCESS on " + target.Name());
+                Orion.SayParty("✅ Discordance SUCCESS on " + target.Name());
+                Orion.AddIgnoreListObject('DiscoList', [target.Serial()]);
+            }
+            // Check for known failure messages
+            else if (
+                Orion.InJournal("That creature is already in discord") !== -1 ||
+                Orion.InJournal("You attempt to disrupt your target") !== -1
+            ) {
+                Orion.SayParty("❌ Discordance FAILED or Already Discorded: " + target.Name());
+                Orion.Print("❌ Discordance FAILED or Already Discorded: " + target.Name());
+                // Do not add to ignore list
+                // Do not clear the list
+            }
+            // Wait 12 seconds before next attempt
+            Orion.Wait(12000);
         } else {
-            Orion.Print("Clearing ignore list");
-            Orion.ClearIgnoreList('DiscoList');
-            Orion.Wait(10000);
+            Orion.Print("No targets found — clearing ignore list");
+           Orion.SayParty("No targets found — clearing ignore list");
+           // Orion.ClearIgnoreList('DiscoList');
+            Orion.Wait(1000);
         }
     }
 }
@@ -385,7 +411,7 @@ function mountUp() {
 }
 
 
-function ReliableCrossHeal() {
+function CrossHeal() {
     if (Orion.SkillValue("Magery") < 7500) {
         //Orion.Print(1191, "[CrossHeal] Script Started");
         while (!Player.Dead()) {
