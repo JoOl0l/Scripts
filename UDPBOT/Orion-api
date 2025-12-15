@@ -1,0 +1,375 @@
+/**
+ * Orion UO Assistant - VSCode IntelliSense Header
+ * Version: 2025
+ * Usage: Save as orion-api.js or orion.d.ts and reference from your scripts
+ */
+
+var Orion = {
+  /**
+   * Prints text to the client journal.
+   * @param {string} text
+   * @param {number} [color]
+   */
+  Print: function (text, color) {},
+
+  /**
+   * Prints a message to the client journal in a specified color.
+   * @param {string} text
+   * @param {number} color
+   */
+  PrintFast: function (text, color) {},
+
+  /**
+   * Prints a message in the top-left notification area.
+   * @param {string} text
+   * @param {number} [color]
+   */
+  PrintAboveHead: function (text, color) {},
+
+  /**
+   * Finds an object by alias or serial. Returns an object if known and in range.
+   * @param {string} aliasOrSerial
+   * @returns {{ Serial: function(): string, Name: function(): string, Distance: function(): number, Exists: function(): boolean }}
+   */
+  FindObject: function (aliasOrSerial) {},
+
+  /**
+   * Returns the serial of the object associated with an alias.
+   * @param {string} alias
+   * @returns {string}
+   */
+  Alias: function (alias) {},
+
+  /**
+   * Sets an alias to a specific serial.
+   * @param {string} alias
+   * @param {string} serial
+   */
+  AddAlias: function (alias, serial) {},
+
+  /**
+   * Removes a set alias.
+   * @param {string} alias
+   */
+  RemoveAlias: function (alias) {},
+
+  /**
+   * Waits a specified time in milliseconds.
+   * @param {number} ms
+   */
+  Wait: function (ms) {},
+
+  /**
+   * Waits for a targeting cursor. Returns true if successful.
+   * @param {number} [timeout]
+   * @returns {boolean}
+   */
+  WaitForTarget: function (timeout) {},
+
+  /**
+   * Sends the targeting cursor to an object.
+   * @param {string} aliasOrSerial
+   */
+  TargetObject: function (aliasOrSerial) {},
+
+  /**
+   * Cancels a current target cursor.
+   */
+  CancelTarget: function () {},
+
+  /**
+   * Casts a spell by name or ID.
+   * @param {string|number} spellNameOrId
+   */
+  Cast: function (spellNameOrId) {},
+
+  /**
+   * Uses a skill by name or ID.
+   * @param {string|number} skillNameOrId
+   */
+  UseSkill: function (skillNameOrId) {},
+
+  /**
+   * Uses an item.
+   * @param {string} aliasOrSerial
+   */
+  UseObject: function (aliasOrSerial) {},
+
+  /**
+   * Equips an item (must be in backpack).
+   * @param {string} aliasOrSerial
+   */
+  Equip: function (aliasOrSerial) {},
+
+  /**
+   * Unequips an item from a specific layer.
+   * @param {number} layerId
+   */
+  UnEquip: function (layerId) {},
+
+  /**
+   * Returns true if character is casting a spell.
+   * @returns {boolean}
+   */
+  InCasting: function () {},
+
+  /**
+   * Sends a macro command (UO macro).
+   * @param {number} macroId
+   * @param {number} [macroSubId]
+   */
+  Macro: function (macroId, macroSubId) {},
+
+  /**
+   * Returns player's current mana.
+   * @returns {number}
+   */
+  Mana: function () {},
+
+  /**
+   * Returns player's current health.
+   * @returns {number}
+   */
+  Hits: function () {},
+
+  /**
+   * Returns player's current stamina.
+   * @returns {number}
+   */
+  Stamina: function () {},
+
+  /**
+   * Returns maximum mana.
+   * @returns {number}
+   */
+  MaxMana: function () {},
+
+  /**
+   * Returns maximum health.
+   * @returns {number}
+   */
+  MaxHits: function () {},
+
+  /**
+   * Returns maximum stamina.
+   * @returns {number}
+   */
+  MaxStamina: function () {},
+
+  /**
+   * Finds items matching given parameters.
+   * @param {string} itemType - e.g., '0x0EED'
+   * @param {string} [color] - e.g., '0x0000'
+   * @param {string} [container] - alias or serial
+   * @param {boolean} [recurse]
+   * @returns {Array<{Serial: function(): string, Name: function(): string}>}
+   */
+  FindType: function (itemType, color, container, recurse) {},
+
+  /**
+   * Moves an item.
+   * @param {string} serial
+   * @param {number} amount
+   * @param {string} targetContainer
+   */
+  MoveItem: function (serial, amount, targetContainer) {},
+
+  /**
+   * Waits for a journal entry to appear.
+   * @param {string} text
+   * @param {number} timeout
+   * @returns {boolean}
+   */
+  WaitJournal: function (text, timeout) {},
+
+  /**
+   * Clears the in-game journal buffer.
+   */
+  ClearJournal: function () {},
+
+  /**
+   * Checks journal for specific text in range.
+   * @param {string} text
+   * @param {number} [lineStart]
+   * @param {number} [lineEnd]
+   * @returns {boolean}
+   */
+  InJournalBetweenTimes: function (text, lineStart, lineEnd) {},
+
+  /**
+   * Gets amount of a given item type.
+   * @param {string} itemType
+   * @param {string} [color]
+   * @returns {number}
+   */
+  Count: function (itemType, color) {},
+
+  /**
+   * Returns your player’s serial.
+   * @returns {string}
+   */
+  GetPlayerSerial: function () {},
+
+  /**
+   * Returns the distance to a given object.
+   * @param {string} aliasOrSerial
+   * @returns {number}
+   */
+  GetDistance: function (aliasOrSerial) {},
+
+  /**
+   * Checks if the object is visible.
+   * @param {string} aliasOrSerial
+   * @returns {boolean}
+   */
+  IsObjectVisible: function (aliasOrSerial) {},
+
+  /**
+   * Requests a gump be sent (often used for context menus).
+   */
+  RequestContextMenu: function () {},
+
+  /**
+   * Clicks a gump button.
+   * @param {number} buttonId
+   */
+  GumpResponse: function (buttonId) {},
+
+  /**
+   * Checks if a gump is currently open.
+   * @returns {boolean}
+   */
+  GumpExists: function () {},
+
+  /**
+   * Moves the character in a direction.
+   * @param {number} direction - 0=N, 1=NE, 2=E, etc.
+   */
+  Move: function (direction) {},
+
+  /**
+   * Returns whether the player is mounted.
+   * @returns {boolean}
+   */
+  IsMounted: function () {},
+
+  /**
+   * Returns current target serial.
+   * @returns {string}
+   */
+  GetTargetInfo: function () {},
+
+  /**
+   * Returns if the player is currently war-mode.
+   * @returns {boolean}
+   */
+  WarMode: function () {},
+
+  /**
+   * Sets war mode on or off.
+   * @param {boolean} state
+   */
+  SetWarMode: function (state) {},
+};
+/**
+ * @namespace Player
+ * @description Represents the player's character. Provides stats and utility methods.
+ */
+var Player = {
+  /**
+   * Returns player's current health.
+   * @returns {number}
+   */
+  Hits: function () {
+    return Orion.Hits();
+  },
+
+  /**
+   * Returns player's maximum health.
+   * @returns {number}
+   */
+  MaxHits: function () {
+    return Orion.MaxHits();
+  },
+
+  /**
+   * Returns player's current mana.
+   * @returns {number}
+   */
+  Mana: function () {
+    return Orion.Mana();
+  },
+
+  /**
+   * Returns player's maximum mana.
+   * @returns {number}
+   */
+  MaxMana: function () {
+    return Orion.MaxMana();
+  },
+
+  /**
+   * Returns player's current stamina.
+   * @returns {number}
+   */
+  Stamina: function () {
+    return Orion.Stamina();
+  },
+
+  /**
+   * Returns player's maximum stamina.
+   * @returns {number}
+   */
+  MaxStamina: function () {
+    return Orion.MaxStamina();
+  },
+
+  /**
+   * Returns player's serial.
+   * @returns {string}
+   */
+  Serial: function () {
+    return Orion.GetPlayerSerial();
+  },
+
+  /**
+   * Returns true if the player is in war mode.
+   * @returns {boolean}
+   */
+  InWarMode: function () {
+    return Orion.WarMode();
+  },
+
+  /**
+   * Sets the player's war mode.
+   * @param {boolean} state
+   */
+  SetWarMode: function (state) {
+    Orion.SetWarMode(state);
+  },
+
+  /**
+   * Returns true if the player is currently casting a spell.
+   * @returns {boolean}
+   */
+  IsCasting: function () {
+    return Orion.InCasting();
+  },
+
+  /**
+   * Returns true if the player is mounted.
+   * @returns {boolean}
+   */
+  IsMounted: function () {
+    return Orion.IsMounted();
+  },
+
+  /**
+   * Returns the distance to another object.
+   * @param {string} targetAliasOrSerial
+   * @returns {number}
+   */
+  DistanceTo: function (targetAliasOrSerial) {
+    return Orion.GetDistance(targetAliasOrSerial);
+  }
+};
