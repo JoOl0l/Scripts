@@ -308,8 +308,8 @@ function discoNearest() {
 
             // Check for success
             if (Orion.InJournal("You play jarring") !== -1) {
-                Orion.Print("✅ Discordance SUCCESS on " + target.Name());
-                Orion.SayParty("✅ Discordance SUCCESS on " + target.Name());
+                Orion.Print("Discordance SUCCESS on " + target.Name());
+                Orion.SayParty(" Discordance SUCCESS on " + target.Name());
                 Orion.AddIgnoreListObject('DiscoList', [target.Serial()]);
             }
             // Check for known failure messages
@@ -317,8 +317,8 @@ function discoNearest() {
                 Orion.InJournal("That creature is already in discord") !== -1 ||
                 Orion.InJournal("You attempt to disrupt your target") !== -1
             ) {
-                Orion.SayParty("❌ Discordance FAILED or Already Discorded: " + target.Name());
-                Orion.Print("❌ Discordance FAILED or Already Discorded: " + target.Name());
+                Orion.SayParty(" Discordance FAILED or Already Discorded: " + target.Name());
+                Orion.Print(" Discordance FAILED or Already Discorded: " + target.Name());
                 // Do not add to ignore list
                 // Do not clear the list
             }
@@ -326,9 +326,9 @@ function discoNearest() {
             Orion.Wait(12000);
         } else {
             Orion.Print("No targets found — clearing ignore list");
-           Orion.SayParty("No targets found — clearing ignore list");
+           Orion.SayParty("Scanning for targets to Discord");
            // Orion.ClearIgnoreList('DiscoList');
-            Orion.Wait(1000);
+            Orion.Wait(5000);
         }
     }
 }
