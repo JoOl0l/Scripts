@@ -24,7 +24,7 @@ function Autostart(){
 	Orion.ToggleScript("botCommands")
 	Shared.AddVar('selector', 1)	
 	Shared.AddVar('autoWalk', false)
-    Orion.ToggleScript("InsureDrops")
+  Orion.ToggleScript("InsureDrops")
     
 }
 
