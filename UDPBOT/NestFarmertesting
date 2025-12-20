@@ -1136,7 +1136,14 @@ function DetectTreasureLevel(tmap) {
         return TREASURE_LEVEL;
     }
 
-    var props = tmap.Properties().toLowerCase();
+    var props = tmap.Properties();
+    if (!props) {
+        Orion.Print("1196", "Treasure map has no properties!");
+        TREASURE_LEVEL = "Unknown";
+        return TREASURE_LEVEL;
+    }
+
+    props = props.toLowerCase();
 
     // Reihenfolge ist wichtig → die seltensten zuerst prüfen
     if (props.indexOf("massive") !== -1) {
@@ -1157,19 +1164,8 @@ function DetectTreasureLevel(tmap) {
     else {
         TREASURE_LEVEL = "Unknown";
     }
-    return TREASURE_LEVEL;
-}
 
-//--#Dig Map
-function BadPoints(){
-Orion.SetBadLocation(827, 777, 9999999999)
-Orion.SetBadLocation(827, 778, 9999999999)
-Orion.SetBadLocation(827, 779, 9999999999)
-Orion.SetBadLocation(828, 777, 9999999999)
-Orion.SetBadLocation(828, 779, 9999999999)
-Orion.SetBadLocation(829, 777, 9999999999)
-Orion.SetBadLocation(829, 778, 9999999999)
-Orion.SetBadLocation(829, 779, 9999999999)
+    return TREASURE_LEVEL;
 }
 
 function GetMapCoords() {
