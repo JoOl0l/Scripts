@@ -1170,132 +1170,169 @@ function DetectTreasureLevel(tmap) {
 
 function GetMapCoords() {
     // Benutze die bereits ausgewählte Map von ShowMapInfo
-    BadPoints()
+    BadPoints();
+
     var tmap = Orion.FindObject('tmap');
     if (!tmap || !tmap.Exists()) {
         Orion.Print('1196', 'No tmap object found.');
         return;
     }
 
+    var tmapSerial = tmap.Serial();
+
     Orion.SetGlobal('found', 0);
 
-    while (!Orion.GumpExists('map', tmap.Serial())) {
-        Orion.UseObject(tmap.Serial());
+    while (!Orion.GumpExists('map', tmapSerial)) {
+        Orion.UseObject(tmapSerial);
         Orion.Wait(100);
     }
-        Orion.Wait(600)
-        var pos = Orion.QuestArrowPosition();
-        var x = pos.X();
-        var y = pos.Y();
-        Special()
-        // Print coords and show quest arrow, seems a bit buggy and sometimes is not the real location, anyway we will run to the right position.
-        Orion.SetTrack(true, x, y);    
-        Orion.CloseGump('map', tmap.Serial());
-        if (Orion.GetPathArray(x, y, Player.Z()).length == 0) {
-            Orion.AddIgnoreListObject('map', tmap.Serial())
+
+    Orion.Wait(600);
+
+    var pos = Orion.QuestArrowPosition();
+    var x = pos.X();
+    var y = pos.Y();
+
+    Special();
+
+    Orion.SetTrack(true, x, y);
+    Orion.CloseGump('map', tmapSerial);
+
+    if (Orion.GetPathArray(x, y, Player.Z()).length === 0) {
+        Orion.AddIgnoreListObject('map', tmapSerial);
+        Orion.CharPrint(self, "1196", "Cant Reach The Map");
+        return;
+    }
+
+    Orion.WarMode(1);
+    Orion.SetGlobal('found', 1);
+
+    var luck = Player.Luck();
+    while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+        Orion.Dress('luck');
+        Orion.Wait(100);
+    }
+
+    Orion.CharPrint(self, "1196", "Running to: " + x + ", " + y);
+
+    while (Orion.GetDistance(x, y) > 1) {
+        Orion.WalkTo(x, y, 0, 1, 255, 1);
+        Orion.Wait(50);
+
+        if (Orion.GetPathArray(x, y, Player.Z()).length === 0 && Orion.GetDistance(x, y) > 1) {
+            Orion.AddIgnoreListObject('map', tmapSerial);
             Orion.CharPrint(self, "1196", "Cant Reach The Map");
+
+            var luck = Player.Luck();
+            while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+                Orion.Dress('main');
+                Orion.Wait(100);
+            }
+
             return;
         }
-        Orion.WarMode(1)
-        Orion.SetGlobal('found', 1)
-          var luck = Player.Luck()
-        while (Player.Luck() == luck && Orion.GetDressList('luck') != '') {
-            Orion.Dress('luck')
-            Orion.Wait(100)
-        }
-        Orion.CharPrint(self, "1196", "Running to: " + x + ", " + y);
-        while (Orion.GetDistance(x, y) > 1) {
-            Orion.WalkTo(x, y, 0, 1, 255, 1);
-            Orion.Wait(50);
-             if (Orion.GetPathArray(x, y, Player.Z()).length == 0 && Orion.GetDistance(x, y) > 1) {
-            Orion.AddIgnoreListObject('map', tmap.Serial())
-            Orion.CharPrint(self, "1196", "Cant Reach The Map");
-              var luck = Player.Luck()
-             while (Player.Luck() == luck && Orion.GetDressList('luck') != '') {
-            Orion.Dress('main')
-            Orion.Wait(100)
-        	}
-            return;
-        }
-        }
-        Orion.CloseGump('map', tmap.Serial())
-        Orion.ToggleScript("Specials", true);
-        Orion.ToggleScript("AutoEverything", true);
-        Orion.ToggleScript("AutoAttack", true);
-        Orion.ToggleScript("FollowNearestMob", true);
-        if (Orion.SkillValue('healing', 'base') >= 600) {
-            Orion.ToggleScript("AutoHealing", true);
-        }
-        Orion.CloseGump('map', tmap.Serial());
-        var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
-        return Orion.Contains(part.Properties(), "(Guardian)")
+    }
+
+    Orion.CloseGump('map', tmapSerial);
+    Orion.ToggleScript("Specials", true);
+    Orion.ToggleScript("AutoEverything", true);
+    Orion.ToggleScript("AutoAttack", true);
+    Orion.ToggleScript("FollowNearestMob", true);
+
+    if (Orion.SkillValue('healing', 'base') >= 600) {
+        Orion.ToggleScript("AutoHealing", true);
+    }
+
+    Orion.CloseGump('map', tmapSerial);
+
+    var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)");
     });
-        while(mobs.length == 0){
-        var chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10)
-        if(chest.length == 0) {
-            Orion.RequestContextMenu(tmap.Serial());
-            Orion.WaitContextMenuCliloc(tmap.Serial(), 3006148);
+
+    while (mobs.length === 0) {
+        var chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10);
+
+        if (chest.length === 0) {
+            Orion.RequestContextMenu(tmapSerial);
+            Orion.WaitContextMenuCliloc(tmapSerial, 3006148);
+
             if (Orion.WaitForTarget(1500)) {
                 Orion.CharPrint(self, "1196", "Digging: " + x + ", " + y);
                 Orion.TargetTile('land|mine', x, y, Player.Z());
-            };
-            var chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10)
+            }
+
+            chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10);
+
             while (Orion.GetDistance(x, y) > 2) {
                 Orion.WalkTo(x, y, 0, 2, 255, 1);
                 Orion.Wait(100);
             }
-            if(Orion.InJournal('you are standing on top')){
-             Orion.WalkTo(Player.X() + 1, Player.Y(), 0, 0, 255, 1);
-            Orion.WalkTo(Player.X(), Player.Y() + 1, 0, 0, 255, 1);
-            Orion.ClearJournal()
+
+            if (Orion.InJournal('you are standing on top')) {
+                Orion.WalkTo(Player.X() + 1, Player.Y(), 0, 0, 255, 1);
+                Orion.WalkTo(Player.X(), Player.Y() + 1, 0, 0, 255, 1);
+                Orion.ClearJournal();
             }
-              if(Orion.InJournal('see that')){
-             Orion.WalkTo(x + 1, y, 0, 0, 255, 1);
-            Orion.ClearJournal()
+
+            if (Orion.InJournal('see that')) {
+                Orion.WalkTo(x + 1, y, 0, 0, 255, 1);
+                Orion.ClearJournal();
             }
-            Orion.Wait(1500)
+
+            Orion.Wait(1500);
         }
-         var mobs1 = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red').filter(function(Summon) {
-        return !Orion.Contains(Summon.Properties(), "summoned");
+
+        var mobs1 = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red')
+            .filter(function(Summon) {
+                return !Orion.Contains(Summon.Properties(), "summoned");
+            });
+
+        if (Player.Hits("%") < 75 && mobs1.length) {
+            Kill();
+        }
+
+        Remount();
+
+        mobs = Orion.FindTypeEx(any, any, 'ground', 'live', 24).filter(function(part) {
+            return Orion.Contains(part.Properties(), "(Guardian)");
         });
-        if(Player.Hits("%") < 75 && mobs1.length){
-        Kill()
-        }
-        Remount()
-        var mobs = Orion.FindTypeEx(any, any, 'ground', 'live', 24).filter(function(part) {
-        return Orion.Contains(part.Properties(), "(Guardian)")
-    });
-        Orion.Wait(100)
-        }
-          var luck = Player.Luck()
-        while (Player.Luck() == luck && Orion.GetDressList('luck') != '') {
-            Orion.Dress('main')
-            Orion.Wait(100)
-        }
-        HandleMobs()
-        while (Orion.GetDistance(x, y) > 0) {
-            Orion.WalkTo(x, y, 0, 0, 255, 1);
-        }
-        LootNests()
-        Remount()
-        while (Orion.BuffExists('enemy of one')) {
-            Orion.Cast('enemy of one')
-            Orion.Wait(200)
-        }
-        var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack)
-    if(lootbag.length > 0){
-    var bag = lootbag[0].Serial()
-    } else {
-    var bag = backpack
+
+        Orion.Wait(100);
     }
-            while (!Orion.Dragging()) {
-                Orion.DragItem(tmap.Serial())
-                Orion.Wait(100)
-            }
-            Orion.Wait(200)
-            Orion.DropDraggedItem(bag);
-            Orion.Wait(800)
+
+    var luck = Player.Luck();
+    while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+        Orion.Dress('main');
+        Orion.Wait(100);
     }
+
+    HandleMobs();
+
+    while (Orion.GetDistance(x, y) > 0) {
+        Orion.WalkTo(x, y, 0, 0, 255, 1);
+    }
+
+    LootNests();
+    Remount();
+
+    while (Orion.BuffExists('enemy of one')) {
+        Orion.Cast('enemy of one');
+        Orion.Wait(200);
+    }
+
+    var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack);
+    var bag = lootbag.length > 0 ? lootbag[0].Serial() : backpack;
+
+    while (!Orion.Dragging()) {
+        Orion.DragItem(tmapSerial);
+        Orion.Wait(100);
+    }
+
+    Orion.Wait(200);
+    Orion.DropDraggedItem(bag);
+    Orion.Wait(800);
+}
+
 
 
 function Kill(){
