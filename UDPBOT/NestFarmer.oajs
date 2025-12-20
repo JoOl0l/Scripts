@@ -2732,7 +2732,7 @@ function updateHalloweenDropGump() {
     var playerName = Player.Name();
     var shardName = Orion.ShardName();
     var tithing = Player.TithingPoints()
-    g.AddText(x + gumpWidth - 220, y + 10, '1153', "Lukas Nests Farmer");
+    g.AddText(x + gumpWidth - 220, y + 10, '1153', "JoOs Nests Farmer");
     g.AddText(x + gumpWidth - 220, y + 20, '1153', "-------------------------------");
     g.AddText(x + gumpWidth - 205, y + 30, '1153', "Player: " + playerName);
     g.AddText(x + gumpWidth - 205, y + 45, '1153', "Tithing Points: " + tithing);
