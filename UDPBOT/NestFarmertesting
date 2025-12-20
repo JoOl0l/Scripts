@@ -1001,63 +1001,76 @@ if(!Orion.ObjAtLayer('mount')){
 //--#Restock
 
 
-function Restock(){
-var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack)
-      var maps = Orion.GetGlobal('maps')
-if (!maps) {
-MapsContainer()
-} else if(maps && !Orion.FindObject('maps')){
-            RecallToHouse();
-            }
-            var container = Orion.FindObject('maps')
-            while(Orion.GetDistance(Orion.FindObject('maps').Serial()) > 1){
-            var x = container.X()
-            var y = container.Y()
-            var z = container.Z()
-            Orion.WalkTo(x, y, z, 1)
-            }
-            while(!Orion.GumpExists('container', Orion.FindObject('maps').Serial())){
-            Orion.UseObject(Orion.FindObject('maps').Serial())
-            Orion.Wait(400)            
-            }
-var Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', Orion.FindObject('maps').Serial())
- if(Maps.length == 0 && Maps1.length == 0){
- LockerRestock()
- Orion.Print('yes')
- return;
-			}
-        while (Maps.length < 5 && Maps1.length != 0) {            
-            var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', Orion.FindObject('maps').Serial())
-            Orion.DragItem(Maps[0].Serial())
-            Orion.Wait(100)
-            Orion.DropDraggedItem(backpack);
-            Orion.Wait(1000)
-var Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', Orion.FindObject('maps').Serial())
-var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack)
-        }
-            var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack)
-    if(lootbag.length > 0){
-    var bag = lootbag[0].Serial()
-    } else {
-    var bag = backpack
+function Restock() {
+    var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    var maps = Orion.GetGlobal('maps');
+
+    if (!maps) {
+        MapsContainer();
+        return;
     }
-        var Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', Orion.FindObject('maps').Serial())
-         var Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse')
- if(Cypher.length == 0 && Cypher1.length == 0){
-			Orion.Print('No More Decrytion Cypher!')
-			Orion.Terminate('all')
-			}
-        while (Cypher.length < 5 && Cypher1.length != 0) {            
-           var Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', Orion.FindObject('maps').Serial())
-            Orion.DragItem(Cypher1[0].Serial())
-            Orion.Wait(100)
-            Orion.DropDraggedItem(bag);
-            Orion.Wait(1000)
-		var Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', Orion.FindObject('maps').Serial())
-         var Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse')
-        }
+
+    var container = Orion.FindObject('maps');
+    if (!container || !container.Exists()) {
+        Orion.Print('1196', 'Maps container invalid, recalling home.');
+        RecallToHouse();
+        return;
     }
-    
+
+    while (Orion.GetDistance(container.Serial()) > 1) {
+        Orion.WalkTo(container.X(), container.Y(), container.Z(), 1);
+        Orion.Wait(50);
+    }
+
+    while (!Orion.GumpExists('container', container.Serial())) {
+        Orion.UseObject(container.Serial());
+        Orion.Wait(400);
+    }
+
+    var Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', container.Serial());
+    if (Maps.length == 0 && Maps1.length == 0) {
+        LockerRestock();
+        Orion.Print('yes');
+        return;
+    }
+
+    while (Maps.length < 5 && Maps1.length != 0) {
+        Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', container.Serial());
+        if (!Maps1.length) break;
+
+        Orion.DragItem(Maps1[0].Serial());
+        Orion.Wait(100);
+        Orion.DropDraggedItem(backpack);
+        Orion.Wait(1000);
+
+        Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    }
+
+    var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack);
+    var bag = lootbag.length > 0 ? lootbag[0].Serial() : backpack;
+
+    var Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', container.Serial());
+    var Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse');
+
+    if (Cypher.length == 0 && Cypher1.length == 0) {
+        Orion.Print('No More Decryption Cypher!');
+        Orion.Terminate('all');
+        return;
+    }
+
+    while (Cypher.length < 5 && Cypher1.length != 0) {
+        Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', container.Serial());
+        if (!Cypher1.length) break;
+
+        Orion.DragItem(Cypher1[0].Serial());
+        Orion.Wait(100);
+        Orion.DropDraggedItem(bag);
+        Orion.Wait(1000);
+
+        Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse');
+    }
+}
+
     
     function LockerRestock()
 {
