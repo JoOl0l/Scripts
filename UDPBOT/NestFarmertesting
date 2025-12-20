@@ -1072,45 +1072,62 @@ function Restock() {
 }
 
     
-    function LockerRestock()
+function LockerRestock()
 {
-var locker = Orion.FindTypeEx('0x4BF8|0x4BFC', any, ground, 'near', 24)
-if(locker.length){
-var container = locker[0]
-var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack)
-while(Maps.length < 5){     
-while(Orion.GetDistance(locker[0].Serial()) > 1){
-            var x = container.X()
-            var y = container.Y()
-            var z = container.Z()
-            Orion.WalkTo(x, y, z, 1)
+    var locker = Orion.FindTypeEx('0x4BF8|0x4BFC', any, ground, 'near', 24);
+    if (!locker.length) {
+        Orion.Print('No More Maps to work on');
+        Orion.Terminate('all');
+        return;
+    }
+
+    var container = locker[0];
+    if (!container || !container.Exists()) {
+        Orion.Print('Locker object invalid.');
+        Orion.Terminate('all');
+        return;
+    }
+
+    var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+
+    while (Maps.length < 5) {
+
+        while (Orion.GetDistance(container.Serial()) > 1) {
+            var x = container.X();
+            var y = container.Y();
+            var z = container.Z();
+            Orion.WalkTo(x, y, z, 1);
+            Orion.Wait(50);
+        }
+
+        Orion.UseObject(container.Serial());
+        Orion.WaitForGump();
+
+        if (Orion.WaitForGump(1000)) {
+            Orion.Wait(50);
+            var gump1 = Orion.GetGump('last');
+
+            if (gump1 && !gump1.Replayed() && gump1.ID() === '0x000F3EBE') {
+                // IMPORTANT: only select ONCE
+                var result = gump1.Select(Orion.CreateGumpHook(10000));
+
+                if (result) {
+                    Orion.Print('No More Maps to work on');
+                    Orion.Terminate('all');
+                    return;
+                }
+
+                Orion.Wait(100);
             }
-            Orion.UseObject(locker[0].Serial());
-            Orion.WaitForGump()  
-	if (Orion.WaitForGump(1000))
-	{
-	Orion.Wait(50)
-		var gump1 = Orion.GetGump('last');
-		if ((gump1 !== null) && (!gump1.Replayed()) && (gump1.ID() === '0x000F3EBE'))
-		{
-			gump1.Select(Orion.CreateGumpHook(10000));
-			if(gump1.Select(Orion.CreateGumpHook(10000))){
-			Orion.Print('No More Maps to work on')
-			Orion.Terminate('all')
-			}
-			Orion.Wait(100);
-		}
-	}
-	Orion.Wait(500)
-	Orion.UseObject(locker[0].Serial());    
-	var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack)
-	}} else{
-	Orion.Print('No More Maps to work on')
-	Orion.Terminate('all')
-	}
+        }
+
+        Orion.Wait(500);
+        Orion.UseObject(container.Serial());
+
+        Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    }
 }
 
-var TREASURE_LEVEL = "Unknown";
 
 function DetectTreasureLevel(tmap) {
     if (!tmap || !tmap.Exists()) {
