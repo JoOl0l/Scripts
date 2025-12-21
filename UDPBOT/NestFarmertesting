@@ -1092,7 +1092,19 @@ function LockerRestock()
 
     while (Maps.length < 5) {
 
+        if (!container.Exists()) {
+            Orion.Print('Locker became invalid during walk.');
+            Orion.Terminate('all');
+            return;
+        }
+
         while (Orion.GetDistance(container.Serial()) > 1) {
+            if (!container || !container.Exists()) {
+                Orion.Print('Locker lost during move.');
+                Orion.Terminate('all');
+                return;
+            }
+
             var x = container.X();
             var y = container.Y();
             var z = container.Z();
@@ -1108,7 +1120,6 @@ function LockerRestock()
             var gump1 = Orion.GetGump('last');
 
             if (gump1 && !gump1.Replayed() && gump1.ID() === '0x000F3EBE') {
-                // IMPORTANT: only select ONCE
                 var result = gump1.Select(Orion.CreateGumpHook(10000));
 
                 if (result) {
@@ -1127,6 +1138,7 @@ function LockerRestock()
         Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
     }
 }
+
 
 
 function DetectTreasureLevel(tmap) {
