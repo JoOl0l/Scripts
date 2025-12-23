@@ -848,7 +848,7 @@ function AlwaysRunning() {
                     Orion.Print('88', 'Distance: ' + Math.round(loc.distance) + ' tiles');
                     Orion.Print('88', 'Coords: ' + loc.x + ', ' + loc.y);
                     Orion.WalkTo(loc.x, loc.y, Player.Z(), 0, 255, 1)
-                    var healer = Orion.FindTypeEx('any', any, ground, any, 24).filter(function(Summon) {
+                    var healer = Orion.FindTypeEx('any', any, ground, any, 48).filter(function(Summon) {
        			 return (Orion.Contains(Summon.Properties(), "Wandering Healer") || Orion.Contains(Summon.Properties(), "Ankh"));
    				 });
                     if (!Player.Dead() || healer.length) {
@@ -913,7 +913,7 @@ function resgump() {
 
 function Healer() {
 while(Player.Dead()){
- var healer = Orion.FindTypeEx('any', any, ground, 'live', 24).filter(function(Summon) {
+ var healer = Orion.FindTypeEx('any', any, ground, 'live', 48).filter(function(Summon) {
         return (Orion.Contains(Summon.Properties(), "Healer") || Orion.Contains(Summon.Properties(), "Fortune Teller"));
     });
     if(healer.length){
@@ -1363,10 +1363,10 @@ while (repositionAttempts < maxAttempts &&
     LootNests();
     Remount();
 
-    while (Orion.BuffExists('enemy of one')) {
-        Orion.Cast('enemy of one');
-        Orion.Wait(200);
-    }
+    //while (Orion.BuffExists('enemy of one')) {
+        //Orion.Cast('enemy of one');
+        //Orion.Wait(200);
+   // }
 
     var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack);
     var bag = lootbag.length > 0 ? lootbag[0].Serial() : backpack;
@@ -1451,7 +1451,7 @@ function HandleMobs(){
     });
    if (mobs.length) {
    Orion.Wait(2000)
-   Orion.ToggleScript("EoO", true);
+   //Orion.ToggleScript("EoO", true);
     while (mobs.length || Orion.IsWalking() || Orion.GetDistance(x, y) > 10) {
         if(Player.Hits("%") <= 60){
        Emergency()
@@ -1475,7 +1475,7 @@ if (Orion.ScriptRunning("FollowNearestMob")) {
 if (Orion.SkillValue('healing', 'base') >= 600) {
     Orion.ToggleScript("AutoHealing", true);
 }
-Orion.ToggleScript("EoO", true);
+//Orion.ToggleScript("EoO", true);
 Orion.GetStatus(self)
 while(Player.Poisoned()){
 Orion.GetStatus(self)
@@ -1758,10 +1758,10 @@ function LootNests() {
        while (Orion.GetDistance(x, y) > 0) {
             Orion.WalkTo(x, y, 0, 0, 255, 1);
         }}
-       if(Orion.BuffExists('enemy of one')){
-		Orion.Cast('enemy of one')
-		Orion.Wait(100)
-		}
+       //if(Orion.BuffExists('enemy of one')){
+		//Orion.Cast('enemy of one')
+		//Orion.Wait(100)
+		//}
 		var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 2, 'gray|criminal|orange|red').filter(function(Summon) {
         return !Orion.Contains(Summon.Properties(), "summoned");
         });
@@ -1989,34 +1989,34 @@ function EoO() {
                     }
 
                     // Nur wenn ALLE Paragons und ALLE Mobs dieselbe Grafik haben
-                    if (allMobsSameAsParagon) {
-                        if (!Orion.BuffExists('Enemy of One')) {
-                            Orion.Cast('Enemy of One');
-                            Orion.Wait(100);
-                        }
-                        Orion.Wait(1);
-                    } else {
-                        if (Orion.BuffExists('Enemy of One')) {
-                            Orion.Cast('Enemy of One'); // Buff aus
-                            Orion.Wait(100);
-                        }
-                        Orion.Wait(1);
-                    }
-                    Orion.Wait(1);
-                } else {
-                    if (Orion.BuffExists('Enemy of One')) {
-                        Orion.Cast('Enemy of One'); // Buff aus
-                        Orion.Wait(100);
-                    }
-                    Orion.Wait(1);
-                }
-                Orion.Wait(1);
-            } else {
+                    //if (allMobsSameAsParagon) {
+                       // if (!Orion.BuffExists('Enemy of One')) {
+                           // Orion.Cast('Enemy of One');
+                           // Orion.Wait(100);
+                       // }
+                        //Orion.Wait(1);
+                    //} else {
+                        i//f (Orion.BuffExists('Enemy of One')) {
+                           // Orion.Cast('Enemy of One'); // Buff aus
+                           // Orion.Wait(100);
+                       // }
+                        //Orion.Wait(1);
+                    //}
+                  //  Orion.Wait(1);
+               // } else {
+                  //  if (Orion.BuffExists('Enemy of One')) {
+                       // Orion.Cast('Enemy of One'); // Buff aus
+                       // Orion.Wait(100);
+                   // }
+                   // Orion.Wait(1);
+              //  }
+              //  Orion.Wait(1);
+            //} else {
                 // Kein Paragon da → Enemy of One aus, falls aktiv
-                if (Orion.BuffExists('Enemy of One')) {
-                    Orion.Cast('Enemy of One');
-                    Orion.Wait(100);
-                }
+               // if (Orion.BuffExists('Enemy of One')) {
+                  //  Orion.Cast('Enemy of One');
+                  //  Orion.Wait(100);
+                //}
                 Orion.Wait(1);
             }
             Orion.Wait(1);
@@ -2024,7 +2024,7 @@ function EoO() {
         Orion.Wait(40);
     }
 }
-
+}   
 function Specials() {
     var multiAbilities = ['Whirlwind Attack', 'Frenzied Whirlwind', 'Lightning Arrow'];
     var singleAbilities = ['Armor Ignore', 'Double Strike', 'Psychic Attack', 'Double Shot'];
@@ -2155,7 +2155,7 @@ function AutoEverything() {
         }
 
         ///Consecrate Weapon
-        if (Orion.SkillValue('chivalry', 'base') > 800 && weaponObject && !Player.Frozen() && Player.Hits('%') >= 50) {
+        if (Orion.SkillValue('chivalry', 'base') > 1400 && weaponObject && !Player.Frozen() && Player.Hits('%') >= 50) {
             if (!Orion.BuffExists('Consecrate Weapon') && Player.Mana() > 10) {
             var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red').filter(function(Summon) {
                 return !Orion.Contains(Summon.Properties(), "summoned");
