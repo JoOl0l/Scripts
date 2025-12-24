@@ -1295,7 +1295,7 @@ function GetMapCoords() {
             }
 
 var repositionAttempts = 0;
-var maxAttempts = 8;
+var maxAttempts = 13;
 var moveOffsets = [
     {dx: 1, dy: 0},
     {dx: -1, dy: 0},
@@ -1304,7 +1304,13 @@ var moveOffsets = [
     {dx: 1, dy: 1},
     {dx: -1, dy: 1},
     {dx: 1, dy: -1},
-    {dx: -1, dy: -1}
+    {dx: -1, dy: -1},
+    {dx: 2, dy: 2},   
+    {dx: -2, dy: -2},
+    {dx: 0, dy: -2},
+    {dx: 0, dy: 2},
+    {dx: 2, dy: 2}
+
 ];
 
 while (repositionAttempts < maxAttempts &&
@@ -1315,7 +1321,7 @@ while (repositionAttempts < maxAttempts &&
     Orion.ClearJournal();
     Orion.Wait(800);
 
-    // Optional: retry dig here if needed
+    //  retry dig 
     Orion.RequestContextMenu(tmap.Serial());
     Orion.WaitContextMenuCliloc(tmap.Serial(), 3006148);
     if (Orion.WaitForTarget(1500)) {
