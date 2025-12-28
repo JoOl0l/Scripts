@@ -1,0 +1,3359 @@
+// ╔══════════════════════════════════════════════════════╗
+// ║                                                      ║
+// ║              🌿 NestFarmer by JoO 🌿                ║
+// ║                                                      ║
+// ║     Automated nest harvesting and farming script     ║
+// ║                                                      ║
+// ║                                                      ║
+// ╚══════════════════════════════════════════════════════╝
+
+
+function Autostart(){
+Orion.ToggleScript('AlwaysRunning')
+}
+// Wichtige Orte und ihre Koordinaten
+var facet1 = Player.Map()
+if(facet1 == 0){
+facet1 = 'felucca'
+}else if(facet1 == 1){
+facet1 = 'trammel'
+} else if(facet1 == 2){
+facet1 = 'ilshenar'
+} else if(facet1 == 3){
+facet1 = 'malas'
+} else if(facet1 == 4){
+facet1 = 'tokuno'
+}else if(facet1 == 5){
+facet1 = "ter mur"
+}
+
+var LOCATIONS = {
+   SELF: [
+   { x: Player.X() , y: Player.Y() , name: "Current Location", facet: facet1 },
+     ],
+    // Dungeons
+    DUNGEONS: [
+        { x: 2499, y: 923, name: "Covetous", facet: "both" },
+        { x: 4111, y: 433, name: "Deceit", facet: "both" },
+        { x: 1297, y: 1081, name: "Despise", facet: "both" },
+        { x: 1177, y: 2640, name: "Destard", facet: "both" },
+        { x: 1999, y: 81, name: "Ice", facet: "both" },
+        { x: 2923, y: 3410, name: "Fire", facet: "both" },
+        { x: 4722, y: 3824, name: "Hythloth", facet: "both" },
+        { x: 1016, y: 1433, name: "Orc", facet: "both" },
+        { x: 513, y: 1563, name: "Shame", facet: "both" },
+        { x: 2044, y: 238, name: "Wrong", facet: "both" },
+        { x: 586, y: 1643, name: "Grove", facet: "both" },
+      //  { x: 1716, y: 2996, name: "Caves", facet: "both" },
+        { x: 3791, y: 1104, name: "Prism", facet: "both" },
+        { x: 792, y: 1613, name: "Sanctuary", facet: "both" },
+        { x: 6429, y: 2679, name: "Blackthorn", facet: "both" },
+        // Malas Dungeons
+        { x: 2369, y: 1273, name: "Doom", facet: "malas" },
+        { x: 2079, y: 1375, name: "Bedlam", facet: "malas" },
+        { x: 1714, y: 985, name: "Labyrinth", facet: "malas" }
+    ],
+    
+    // Towns
+    TOWNS: [
+        { x: 1431, y: 1696, name: "Britain", facet: "both" },
+         { x: 3691, y: 2522, name: "Ocllo", facet: "both" },
+        { x: 2724, y: 2188, name: "Bucs", facet: "both" },
+        { x: 2235, y: 1198, name: "Cove", facet: "both" },
+        { x: 5272, y: 3989, name: "Delucia", facet: "both" },
+        { x: 1325, y: 3779, name: "Jhelom", facet: "both" },
+        { x: 3792, y: 2232, name: "Magincia", facet: "both" },
+        { x: 2504, y: 563, name: "Minoc", facet: "both" },
+        { x: 4471, y: 1177, name: "Moonglow", facet: "both" },
+        { x: 3769, y: 1315, name: "Nujelm", facet: "both" },
+        { x: 5675, y: 3141, name: "Papua", facet: "both" },
+        { x: 2878, y: 3471, name: "Serpent", facet: "both" },
+      //  { x: 598, y: 2154, name: "Skara", facet: "both" },
+        { x: 1907, y: 2688, name: "Trinsic", facet: "both" },
+        { x: 2897, y: 677, name: "Vesper", facet: "both" },
+        { x: 658, y: 817, name: "Yew", facet: "both" },
+        // Malas Towns
+        { x: 990, y: 527, name: "Luna", facet: "malas" },
+        { x: 2047, y: 1353, name: "Umbra", facet: "malas" },
+        // Tokuno Towns
+        { x: 724, y: 1255, name: "Zento", facet: "tokuno" },
+    ],
+    
+    // Moongates
+    MOONGATES: [
+      { x: 2711, y: 2234, name: "Bucs Gate", facet: "Felucca" },
+        { x: 4467, y: 1283, name: "Moonglow Gate", facet: "both" },
+        { x: 1336, y: 1997, name: "Britain Gate", facet: "both" },
+        { x: 1499, y: 3771, name: "Jhelom Gate", facet: "both" },
+        { x: 771, y: 752, name: "Yew Gate", facet: "both" },
+        { x: 2701, y: 692, name: "Minoc Gate", facet: "both" },
+        { x: 1828, y: 2948, name: "Trinsic Gate", facet: "both" },
+    //    { x: 643, y: 2067, name: "Skara Gate", facet: "both" },
+        { x: 3563, y: 2139, name: "Magincia Gate", facet: "both" },
+        // Ilshenar Moongates
+        { x: 1215, y: 467, name: "Compassion Gate", facet: "ilshenar" },
+        { x: 722, y: 1366, name: "Honesty Gate", facet: "ilshenar" },
+        { x: 744, y: 724, name: "Honor Gate", facet: "ilshenar" },
+        { x: 281, y: 1016, name: "Humility Gate", facet: "ilshenar" },
+        { x: 987, y: 1011, name: "Justice Gate", facet: "ilshenar" },
+        { x: 1174, y: 1286, name: "Sacrifice Gate", facet: "ilshenar" },
+        { x: 1532, y: 1340, name: "Spirituality Gate", facet: "ilshenar" },
+        { x: 528, y: 216, name: "Valor Gate", facet: "ilshenar" },
+        { x: 1721, y: 218, name: "Chaos Gate", facet: "ilshenar" },
+        // Tokuno Moongates
+        { x: 802, y: 1204, name: "Makoto-Jima Gate", facet: "tokuno" },
+        { x: 1169, y: 998, name: "Isamu-Jima Gate", facet: "tokuno" },
+        { x: 207, y: 628, name: "Homare-Jima Gate", facet: "tokuno" },
+        // Ter Mur Moongates
+        { x: 850, y: 3525, name: "Royal City Gate", facet: "ter mur" },
+         // Malas
+        { x: 1015, y: 527, name: "Luna Gate", facet: "malas" },
+        { x: 1997, y: 1386, name: "Umbra Gate", facet: "malas" },
+    ],
+
+    // Shrines
+    SHRINES: [
+        { x: 1858, y: 874, name: "Compassion Shrine", facet: "both" },
+        { x: 4212, y: 563, name: "Honesty Shrine", facet: "both" },
+        { x: 1723, y: 3527, name: "Honor Shrine", facet: "both" },
+        { x: 4274, y: 3697, name: "Humility Shrine", facet: "both" },
+        { x: 1300, y: 633, name: "Justice Shrine", facet: "both" },
+        { x: 3355, y: 289, name: "Sacrifice Shrine", facet: "both" },
+        { x: 1606, y: 2489, name: "Spirituality Shrine", facet: "both" },
+        { x: 2495, y: 3930, name: "Valor Shrine", facet: "both" },
+        { x: 1460, y: 843, name: "Chaos Shrine", facet: "both" }
+    ],
+BONE: [
+    { x: 1156, y: 1143, name: "The Village of Lakeshire", facet: "ilshenar", hook: 1 },
+    { x: 644, y: 854, name: "The Rat Fort", facet: "ilshenar", hook: 2 },
+    { x: 1363, y: 1075, name: "Reg Volom", facet: "ilshenar", hook: 3 },
+    { x: 1572, y: 1046, name: "Twin Oaks Tavern", facet: "ilshenar", hook: 4 },
+    { x: 984, y: 622, name: "The Oasis", facet: "ilshenar", hook: 5 },
+    { x: 1746, y: 1221, name: "Blood Dungeon", facet: "ilshenar", hook: 6 },
+    { x: 912, y: 1362, name: "Cyclops Dungeon", facet: "ilshenar", hook: 7 },
+    { x: 824, y: 774, name: "Exodus Dungeon", facet: "ilshenar", hook: 8 },
+    { x: 349, y: 1434, name: "The Kirin Passage", facet: "ilshenar", hook: 9 },
+    { x: 971, y: 303, name: "Pass of Karnaugh", facet: "ilshenar", hook: 10 },
+    { x: 1033, y: 1154, name: "The Rat Cave", facet: "ilshenar", hook: 11 },
+    { x: 541, y: 466, name: "Terort Skitas", facet: "ilshenar", hook: 12 },
+  //  { x: 0, y: 0, name: "Twisted Weald", facet: "ilshenar", hook: 13 },
+    { x: 642, y: 1307, name: "Wisp Dungeon", facet: "ilshenar", hook: 14 },
+    { x: 753, y: 497, name: "Gwenno's Memorial", facet: "ilshenar", hook: 15 },
+    { x: 1504, y: 628, name: "Desert Gypsy Camp", facet: "ilshenar", hook: 16 },
+    { x: 1785, y: 573, name: "Rock Dungeon", facet: "ilshenar", hook: 17 }
+],
+SPECIALS: [
+    { x: 1953, y: 488, name: "East Luna Far", facet: "malas", hook: 50003},
+    { x: 1073, y: 1433, name: "Sout Luna Far", facet: "malas", hook: 50004},
+    { x: 1112, y: 3606, name: "East Royal City Far", facet: "ter mur", hook: 50005},
+], 
+REZZ: [
+   { x: 0, y: 0, name: "Rezz", facet: "Both"},
+], 
+};
+
+// Facet Grenzen
+var FACET_BOUNDS = {
+    FELUCCA: { n: 0, s: 4096, w: 0, e: 7168 },
+    TRAMMEL: { n: 0, s: 4096, w: 0, e: 7168 },
+    ILSHENAR: { n: 0, s: 1600, w: 0, e: 2304 },
+    MALAS: { n: 0, s: 2048, w: 0, e: 2560 },
+    TOKUNO: { n: 0, s: 1448, w: 0, e: 1448 },
+    "TER MUR": { n: 0, s: 4096, w: 0, e: 1280 }
+};
+
+function calculateDistance(x1, y1, x2, y2) {
+    // Berechne die Luftlinie zwischen den Punkten
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
+
+
+function findNearestLocations(targetX, targetY, facet, maxResults) {
+    maxResults = maxResults || 3; 
+    var allLocations = [];
+    
+    function addLocation(loc, type) {
+        allLocations.push({
+            name: loc.name,
+            type: type,
+            distance: calculateDistance(targetX, targetY, loc.x, loc.y),
+            x: loc.x,
+            y: loc.y
+        });
+    }
+    // self
+    LOCATIONS.SELF.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase()){   
+            addLocation(loc, "SELF");
+            }
+    });
+
+    // Dungeons
+    LOCATIONS.DUNGEONS.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase() || 
+            (loc.facet === "both" && (facet === "Felucca" || facet === "Trammel"))) {
+            addLocation(loc, "Dungeon");
+        }
+    });
+
+    // Towns
+    LOCATIONS.TOWNS.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase() || 
+            (loc.facet === "both" && (facet === "Felucca" || facet === "Trammel"))) {
+            addLocation(loc, "Town");
+        }
+    });
+
+    // Moongates
+    LOCATIONS.MOONGATES.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase() || 
+            (loc.facet === "both" && (facet === "Felucca" || facet === "Trammel"))) {
+            addLocation(loc, "Moongate");
+        }
+    });
+
+    // Shrines
+    LOCATIONS.SHRINES.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase() || 
+            (loc.facet === "both" && (facet === "Felucca" || facet === "Trammel"))) {
+            addLocation(loc, "Shrine");
+        }
+    });
+
+    // ===== 💀 BONE – Ilshenar Transporter =====
+    if (facet.toLowerCase() === "ilshenar") {
+        LOCATIONS.BONE.forEach(function(loc) {
+            if (loc.facet === "ilshenar") {
+                addLocation(loc, "Bone");
+            }
+        });
+    }
+    
+    // === SPECIALS hinzufügen ===
+if (LOCATIONS.SPECIALS && LOCATIONS.SPECIALS.length) {
+    LOCATIONS.SPECIALS.forEach(function(loc) {
+        if (loc.facet === facet.toLowerCase()) {
+            allLocations.push({
+                name: loc.name,
+                type: "Special",
+                distance: calculateDistance(targetX, targetY, loc.x, loc.y),
+                x: loc.x,
+                y: loc.y,
+                hook: loc.hook
+            });
+        }
+    });
+}
+
+    // sortieren & begrenzen
+    return allLocations.sort(function(a, b) {
+        return a.distance - b.distance;
+    }).slice(0, maxResults);
+    
+     return closestLocations;
+}
+
+function findNearestRezz(facet) {
+    facet = facet.toLowerCase(); // normalize
+    var maxResults = 3;
+    var allLocations = [];
+    var px = Player.X();
+    var py = Player.Y();
+    function addLocation(loc) {
+        allLocations.push({
+            name: loc.name,
+            x: loc.x,
+            y: loc.y,
+            facet: loc.facet,
+            distance: calculateDistance(px, py, loc.x, loc.y)
+        });
+    }
+    for (var i = 0; i < LOCATIONS.REZZ.length; i++) {
+        var loc = LOCATIONS.REZZ[i];
+        var lf = loc.facet.toLowerCase();
+        if (lf === facet || lf === "both") {
+            addLocation(loc);
+        }
+    }
+    allLocations.sort(function(a, b) {
+        return a.distance - b.distance;
+    });
+    return allLocations.slice(0, maxResults);
+}
+
+
+
+function findNearestCrystal(type, locationName) {
+
+    // ---------------------------
+    // Check WHAT location is
+    // ---------------------------
+    var isSpecial = LOCATIONS.SPECIALS.some(function(s) {
+        return s.name.toLowerCase() === locationName.toLowerCase();
+    });
+     var isSelf = LOCATIONS.SELF.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var needsCrystal = !isSpecial && !isSelf
+
+   var graphic = type === 'corrupted' ? '0x468A' : '0x468B';
+   var crystals = Orion.FindTypeEx(graphic, "0x0A29|0x0000", 'ground', 'near', 30);
+    if (crystals.length === 0 && needsCrystal) {
+        RecallToTele();
+    }
+     var crystals = Orion.FindTypeEx(graphic, "0x0A29|0x0000", 'ground', 'near', 30);
+     if(crystals.length){
+    var crystal = crystals[0];
+    return {
+        serial: crystal.Serial(),
+        x: crystal.X(),
+        y: crystal.Y(),
+        z: crystal.Z(),
+        type: type
+    };}
+}
+
+
+function usePortal(crystal, locationName, facet) {
+
+    var command = "";
+
+    if (facet.toLowerCase() === "felucca") {
+        command = "fel ";
+    }
+    
+    var isSelf = LOCATIONS.SELF.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var isDungeon = LOCATIONS.DUNGEONS.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var isShrine = LOCATIONS.SHRINES.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var isTown = LOCATIONS.TOWNS.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var isBone = LOCATIONS.BONE.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    var isSpecial = LOCATIONS.SPECIALS.some(function(s) {
+        return s.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    // ---------------------------------------------------------
+    // 1) Determine if we NEED a Crystal
+    // ---------------------------------------------------------
+    var isMoongate = locationName.toLowerCase().indexOf("gate") !== -1;
+
+    var needsCrystal =
+        isDungeon ||
+        isTown ||
+        isMoongate;
+
+    // ---------------------------------------------------------
+    // 2) Move TO Crystal only when needed
+    // ---------------------------------------------------------
+    if (needsCrystal && crystal && crystal.x && crystal.y) {
+        Orion.WalkTo(crystal.x, crystal.y, crystal.z, 1, 15, 1);
+        Orion.Wait(100);
+    }
+
+    // ---------------------------------------------------------
+    // 3) SPECIAL → recall only, never crystal
+    // ---------------------------------------------------------
+    if (isSpecial) {
+        var specialLoc = LOCATIONS.SPECIALS.filter(function(s){
+            return s.name.toLowerCase() === locationName.toLowerCase();
+        })[0];
+
+        Orion.Print("Using SPECIAL recall: " + specialLoc.name);
+        RecallToSpecial(specialLoc.hook);
+        return;
+    }
+    
+   if(isSelf){
+   Orion.Wait(10)
+   return;
+   }
+
+    // ---------------------------------------------------------
+    // 4) SHRINE (teleporter nearby?) else RecallToHouse()
+    // ---------------------------------------------------------
+    if (isShrine) {
+
+        var tele = Orion.FindTypeEx('0x99C7', 0x0AC0, 'ground', 'near', 25);
+
+        if (tele.length === 0) {
+            RecallToTele();
+            return;
+        }
+
+        SelectShrineGump(locationName, facet);
+        return;
+    }
+
+    // ---------------------------------------------------------
+    // 5) BONE TELEPORTER (Ilshenar)
+    // ---------------------------------------------------------
+    if (isBone) {
+
+        var tele2 =Orion.FindTypeEx('0x9F74', 0x0000, 'ground', 'near', 25);
+
+        if (tele2.length === 0) {
+            RecallToTele();
+            return;
+        }
+
+        SelectBoneGump(locationName);
+        return;
+    }
+
+    // ---------------------------------------------------------
+    // 6) Moongate – via crystal speech
+    // ---------------------------------------------------------
+    if (isMoongate) {
+
+        if (locationName.toLowerCase().indexOf("-jima") !== -1) {
+            command += locationName.replace("-Jima Gate", "").replace(" Gate", "") + " moongate";
+
+        } else if (locationName.toLowerCase().indexOf("royal city") !== -1) {
+            command += "ter-mur moongate";
+
+        } else {
+            command += locationName.replace(" Gate", "") + " moongate";
+        }
+    }
+
+    // === Dungeon ===
+    else if (isDungeon) {
+       command += "dungeon " + locationName;
+    }
+
+    // === Town ===
+    else if (isTown) {
+       command += locationName + " mint";
+    }
+
+    // === Default ===
+    else {
+       command += locationName;
+    }
+
+    // -------------------------
+    // Execute command through crystal
+    // -------------------------
+    if (command) {
+        Orion.Say(command);
+    }
+}
+
+
+
+
+
+function SelectBoneGump(locationName) {
+
+    // === BONE TARGET FINDEN ===
+    var entry = null;
+
+    for (var i = 0; i <  LOCATIONS.BONE.length; i++) {
+        if (LOCATIONS.BONE[i].name.toLowerCase() === locationName.toLowerCase()) {
+            entry = LOCATIONS.BONE[i];
+            break;
+        }
+    }
+
+    if (!entry) {
+        Orion.Print('1196', 'Error: Bone destination not found!');
+        return;
+    }
+
+    // === BONE TELEPORTER IN DER NÄHE SUCHEN ===
+    var boneObj = Orion.FindTypeEx('0x9F74', 0x0000, 'ground', 'near', 25);
+
+    if (!boneObj.length) {
+        Orion.Print('1196', 'Error: No bone teleporter found!');
+        return;
+    }
+
+    var bone = Orion.FindObject(boneObj[0].Serial());
+
+    // Hinlaufen
+    Orion.WalkTo(bone.X(), bone.Y(), bone.Z(), 1);
+
+    // Gump öffnen
+    while (!Orion.GumpExists('generic', bone.Serial())) {
+        Orion.UseObject(bone.Serial());
+        Orion.Wait(500);
+    }
+
+    // === GUMP AUSWÄHLEN ===
+    if (!Orion.WaitForGump(2000)) {
+        Orion.Print('1196', 'Error: Bone gump did not open!');
+        return;
+    }
+
+    var gump = Orion.GetGump('last');
+
+    if (!gump || gump.Replayed()) {
+        Orion.Print('1196', 'Error: Invalid gump!');
+        return;
+    }
+
+    gump.Select(Orion.CreateGumpHook(entry.hook));
+}
+
+
+
+
+function SelectShrineGump(locationName, facet) {
+    // Versuche, den Shrine in der Nähe zu finden und das Gump zu öffnen
+    var shrineObj = Orion.FindTypeEx('0x99C7', 0x0AC0, 'ground', 'near', 25);
+    if (shrineObj.length) {
+        var shrineItem = Orion.FindObject(shrineObj[0].Serial());
+        var x1 = shrineItem.X();
+        var y1 = shrineItem.Y();
+        var z1 = shrineItem.Z();
+        Orion.WalkTo(x1, y1, z1, 1);
+        while (!Orion.GumpExists('generic', shrineObj[0].Serial())) {
+            Orion.UseObject(shrineObj[0].Serial());
+            Orion.Wait(500);
+        }
+    }
+
+    // Finde das Shrine-Objekt in der Liste
+    var shrine = LOCATIONS.SHRINES.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    // Wenn kein Shrine in der Liste ist, prüfe auf Tokuno Shrines
+    if (!shrine && (locationName.toLowerCase().indexOf("homare") !== -1 ||
+                    locationName.toLowerCase().indexOf("isamu") !== -1 ||
+                    locationName.toLowerCase().indexOf("makoto") !== -1)) {
+        shrine = { name: locationName, facet: "tokuno" };
+    }
+
+    if (!shrine) {
+        Orion.Print('1196', 'Error: Shrine not found in list!');
+        return;
+    }
+
+    // Gump ID bestimmen
+    var hookID = -1;
+
+    // === Trammel Shrines ===
+    if (facet.toLowerCase() === "trammel" || facet.toLowerCase() === "both") {
+        switch (locationName.toLowerCase()) {
+            case "compassion shrine": hookID = 1; break;
+            case "honesty shrine": hookID = 2; break;
+            case "honor shrine": hookID = 3; break;
+            case "humility shrine": hookID = 4; break;
+            case "justice shrine": hookID = 5; break;
+            case "sacrifice shrine": hookID = 6; break;
+            case "spirituality shrine": hookID = 7; break;
+            case "valor shrine": hookID = 8; break;
+            case "chaos shrine": hookID = 9; break;
+        }
+    }
+
+    // === Felucca Shrines ===
+    if (facet.toLowerCase() === "felucca") {
+        switch (locationName.toLowerCase()) {
+            case "compassion shrine": hookID = 10; break;
+            case "honesty shrine": hookID = 11; break;
+            case "honor shrine": hookID = 12; break;
+            case "humility shrine": hookID = 13; break;
+            case "justice shrine": hookID = 14; break;
+            case "sacrifice shrine": hookID = 15; break;
+            case "spirituality shrine": hookID = 16; break;
+            case "valor shrine": hookID = 17; break;
+            case "chaos shrine": hookID = 18; break;
+        }
+    }
+
+    // === Tokuno Shrines ===
+    if (shrine.facet === "tokuno") {
+        if (locationName.toLowerCase().indexOf("homare") !== -1) hookID = 19;
+        if (locationName.toLowerCase().indexOf("isamu") !== -1) hookID = 20;
+        if (locationName.toLowerCase().indexOf("makoto") !== -1) hookID = 21;
+    }
+
+    if (hookID === -1) {
+        Orion.Print('1196', 'Error: Shrine not mapped to gump ID!');
+        return;
+    }
+
+    // Warte auf das Gump-Fenster
+    if (!Orion.WaitForGump(2000)) {
+        Orion.Print('1196', 'Error: Shrine selection gump not found!');
+        return;
+    }
+
+    var gump = Orion.GetGump('last');
+    if (gump && !gump.Replayed()) {
+        gump.Select(Orion.CreateGumpHook(hookID));
+    }
+}
+
+
+
+function getPortalInstructions(locationName, facet, usePortalIfFound) {
+    var instructions = "";
+    instructions += "To reach this location:\n";
+
+    // Prüfen, ob es sich um ein Dungeon handelt (über DUNGEONS-Liste)
+    var isDungeon = LOCATIONS.DUNGEONS.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+    var isTown = LOCATIONS.TOWNS.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+
+    // Bestimme den Kristalltyp
+    var crystal = findNearestCrystal(isDungeon ? 'corrupted' : 'normal', locationName);
+        var isSpecial = LOCATIONS.SPECIALS.some(function(s) {
+        return s.name.toLowerCase() === locationName.toLowerCase();
+    });
+     var isSelf = LOCATIONS.SELF.some(function(d) {
+        return d.name.toLowerCase() === locationName.toLowerCase();
+    });
+    
+
+    if (crystal || isSelf || isSpecial) {
+    //    instructions += "Found " + (crystal.type === 'corrupted' ? 'Corrupted Crystal Portal' : 'Crystal Portal') + " at (" + crystal.x + ", " + crystal.y + ")\n";
+        if (usePortalIfFound) {
+            usePortal(crystal, locationName, facet);
+            instructions += "Automatically using portal to travel...\n";
+        } else {
+            instructions += "2) Say '";
+            if (facet.toLowerCase() === "felucca") {
+                instructions += "fel ";
+            }
+
+            if (locationName.toLowerCase().indexOf("gate") !== -1) {
+                if (locationName.toLowerCase().indexOf("-jima") !== -1) {
+                    instructions += locationName.replace("-Jima Gate", "").replace(" Gate", "") + " moongate'";
+                } else if (locationName.toLowerCase().indexOf("royal city") !== -1) {
+                    instructions += "ter-mur moongate'";
+                } else {
+                    instructions += locationName.replace(" Gate", "") + " moongate'";
+                }
+            } else if (isDungeon) {
+                instructions += "dungeon " + locationName + "'";
+            } else if (isTown) {
+                instructions += locationName + " mint";
+            } else {
+                instructions += locationName + "'";
+            }
+        }
+    } else {
+        instructions += "1) No suitable crystal portal found nearby\n";
+        instructions += "2) Find a " + (isDungeon ? "Corrupted Crystal Portal (0x468A)" : "Crystal Portal (0x468B)") + " and say '";
+        if (facet.toLowerCase() === "felucca") {
+            instructions += "fel ";
+        }
+
+        if (locationName.toLowerCase().indexOf("gate") !== -1) {
+            if (locationName.toLowerCase().indexOf("-jima") !== -1) {
+                instructions += locationName.replace("-Jima Gate", "").replace(" Gate", "") + " moongate'";
+            } else if (locationName.toLowerCase().indexOf("royal city") !== -1) {
+                instructions += "ter-mur moongate'";
+            } else {
+                instructions += locationName.replace(" Gate", "") + " moongate'";
+            }
+        } else if (isDungeon) {
+            instructions += "dungeon " + locationName + "'";
+        } else {
+            instructions += locationName + "'";
+        }
+    }
+
+    return instructions;
+}
+
+
+function findNearestMoongate(x, y, facet) {
+    var gates = [];
+    
+    LOCATIONS.MOONGATES.forEach(function(gate) {
+        if(gate.facet === facet.toLowerCase() || (gate.facet === "both" && (facet === "Felucca" || facet === "Trammel"))) {
+            gates.push({
+                name: gate.name,
+                distance: calculateDistance(x, y, gate.x, gate.y),
+                x: gate.x,
+                y: gate.y
+            });
+        }
+    });
+    
+    if(gates.length === 0) return null;
+    
+    return gates.sort(function(a, b) { return a.distance - b.distance; })[0];
+}
+
+function ShowMapInfo() {
+   Orion.ClearIgnoreList('map')
+   Orion.Dress('Main')
+   if(!Orion.ScriptRunning('AlwaysRunning')){
+   Orion.ToggleScript('AlwaysRunning')
+   }
+   if(!Orion.ScriptRunning('InsureItems')){
+   Orion.ToggleScript('InsureItems')
+   }
+   var items = Orion.FindTypeEx(any, any, backpack, "recurse")
+if(Player.Weight() / Player.MaxWeight() >= 0.7 || items.length >= 110){
+   SortAll()
+   }
+    Orion.Dress('Main')
+    while(true){
+   Orion.Dress('Main')
+    RepairEquippedItems()
+    while (Orion.GumpExists('map', any, 'any')) {
+        Orion.CloseGump('map', any, 'any')
+    }
+    Orion.Dress('Main')
+    Orion.UseIgnoreList('map')
+    var maps = Orion.FindTypeEx(0x14EB, 0x0AD1, backpack).filter(function(part) {
+        return !Orion.Contains(part.Properties(), "Completed By");
+    });
+      var Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse')
+    if(maps.length && Cypher.length){
+    Orion.AddObject('tmap', maps[0].Serial())
+    } else{
+   RecallToHouse();
+   Restock()
+   Orion.Wait(100)
+    var maps = Orion.FindTypeEx(0x14EB, 0x0AD1, backpack).filter(function(part) {
+        return !Orion.Contains(part.Properties(), "Completed By");
+    });
+    if(maps.length){
+    Orion.AddObject('tmap', maps[0].Serial())
+    }
+    }
+    Orion.Wait(100)
+    
+    var tmap = Orion.FindObject('tmap');
+    if (!tmap || !tmap.Exists()) {
+        Orion.Print('1196', 'Error: Invalid map object!');
+        return;
+    }
+
+    // Facetten- und Koordinatenauslesen
+    var props = tmap.Properties();
+    var facet = "Unknown";    
+    // Facette ermitteln
+    if(props.indexOf("Felucca") !== -1) facet = "Felucca";
+    else if(props.indexOf("Trammel") !== -1) facet = "Trammel";
+    else if(props.indexOf("Malas") !== -1) facet = "Malas";
+    else if(props.indexOf("Ilshenar") !== -1) facet = "Ilshenar";
+    else if(props.indexOf("Tokuno") !== -1) facet = "Tokuno";
+    else if(props.indexOf("Ter Mur") !== -1) facet = "Ter Mur";
+    Orion.Dress('Main')
+    // Map öffnen für Koordinaten
+    Orion.UseObject(tmap.Serial());
+    while (!Orion.GumpExists('map', tmap.Serial())) {
+        Orion.UseObject(tmap.Serial());
+        Orion.Wait(100);
+    }
+    Orion.Wait(200)   
+    var pos = Orion.QuestArrowPosition();    
+    var x = pos.X();
+    var y = pos.Y();
+  
+    // Finde die nächstgelegenen Orte und das nächste Moongate zum Ziel
+    var nearestLocations = findNearestLocations(x, y, facet);
+    var nearestGate = findNearestMoongate(x, y, facet);
+    DetectTreasureLevel(tmap)
+    
+    
+    // Informationen anzeigen
+    Orion.Print('88', '========================================');
+    Orion.Print('88', 'Treasure Map Information:');
+    Orion.Print('88', 'Facet: ' + facet);
+    Orion.Print('88', 'Location: ' + x + ', ' + y);
+    Orion.Print('88', 'Level: ' + TREASURE_LEVEL);
+    Orion.Print('88', 'Nearest Location:');
+   for (var i = 0; i < nearestLocations.length; i++) {
+    var loc = nearestLocations[i];
+    Orion.Print('88', loc.name + ' (' + loc.type + ')');
+    Orion.Print('88', 'Distance: ' + Math.round(loc.distance) + ' tiles');
+    Orion.Print('88', 'Coords: ' + loc.x + ', ' + loc.y);
+    Orion.Print('88', '=======================================');
+
+    getPortalInstructions(loc.name, facet, true);
+    Orion.Wait(500);
+    GetMapCoords();
+    var items = Orion.FindTypeEx(any, any, backpack, "recurse")
+if(Player.Weight() / Player.MaxWeight() >= 0.7 || items.length >= 110){
+    SortAll();
+    }
+    if (Orion.GetGlobal('found') == 1) {
+        break;
+    }
+}   
+ if (Orion.GetGlobal('found') == 0) {
+RecallToHouse()
+BlockedMap() 
+    }
+    Orion.CloseGump('map', tmap.Serial());
+    Orion.RemoveObject('tmap')
+    Orion.AddIgnoreListObject('map', tmap.Serial())
+    Orion.Wait(100)
+  }
+}
+
+
+function AlwaysRunning() {
+    updateHalloweenDropGump()
+    startRuntimeCounter();
+    while (true) {
+        updateElapsedTime();
+        if (Player.Dead()) {
+        var x = Player.X()
+        var y = Player.Y()
+        var z = Player.Z()
+            Orion.PauseScript('all', 'AlwaysRunning')
+            incrementDeathCounter()
+            Orion.ToggleScript('resgump')
+            Orion.ToggleScript('Healer')
+            var tmap = Orion.FindObject('tmap');
+        if (!tmap || !tmap.Exists()) {
+        Orion.Print('1196', 'No tmap during death.');
+        continue;
+        }
+
+        var props = tmap.Properties();
+        var facet = "Unknown";
+
+        if (props.indexOf("Felucca") !== -1) facet = "Felucca";
+        else if (props.indexOf("Trammel") !== -1) facet = "Trammel";
+        else if (props.indexOf("Malas") !== -1) facet = "Malas";
+        else if (props.indexOf("Ilshenar") !== -1) facet = "Ilshenar";
+        else if (props.indexOf("Tokuno") !== -1) facet = "Tokuno";
+        else if (props.indexOf("Ter Mur") !== -1) facet = "Ter Mur";
+            var nearestLocations = findNearestRezz(facet);
+            Orion.Print('88', 'Nearest Location:');
+            for (var i = 0; i < nearestLocations.length; i++) {
+            var loc = nearestLocations[i];
+                if (Orion.GetPathArray(loc.x, loc.y, Player.Z(), 0, 255).length != 0) {
+                    var loc = nearestLocations[i];
+                    Orion.Print('88', loc.name);
+                    Orion.Print('88', 'Distance: ' + Math.round(loc.distance) + ' tiles');
+                    Orion.Print('88', 'Coords: ' + loc.x + ', ' + loc.y);
+                    Orion.WalkTo(loc.x, loc.y, Player.Z(), 0, 255, 1)
+                    var healer = Orion.FindTypeEx('any', any, ground, any, 48).filter(function(Summon) {
+       			 return (Orion.Contains(Summon.Properties(), "Wandering Healer") || Orion.Contains(Summon.Properties(), "Ankh"));
+   				 });
+                    if (!Player.Dead() || healer.length) {
+                        break;
+                    }
+                }
+            }
+            while(Player.Dead()){
+            Orion.Wait(100)
+            }
+            ReVamp()
+             while (Player.Hits("%") < 80 && !Player.Dead()) {
+            if (!Orion.DisplayTimerExists('Confidence') && Player.Mana() > 5 && Player.Hits("%") < 80) { // Bushido 50.0 or above
+                var remain = Orion.BuffTimeRemaining('Confidence') || 0
+                Orion.Cast('Confidence');
+                Orion.Wait(650);      
+                if (Orion.BuffExists('Confidence') && remain < Orion.BuffTimeRemaining('Confidence')) {
+                    Orion.AddDisplayTimer('Confidence', 4000, 'AboveChar', 'Circle|Bar', 'Confidence', -1, 25, '906', 0xff, '0xFFFFFF');
+                }
+                 var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 7, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+        if(mobs.length){
+        Orion.Attack(mobs[0].Serial())
+        if(Orion.GetDistance(mobs[0].Serial()) > 0){
+        Orion.Follow(mobs[0].Serial())
+        }
+        }
+            }
+            }
+            Remount()
+            if(!Player.Dead()){
+            Orion.WalkTo(x, y, z, 0, 255, 1)
+            Orion.ResumeScript('all')
+            }
+        }
+        Orion.Wait(1000)
+    }
+}
+
+//--#Rez Functions
+
+function resgump() {
+    while (true) {
+        if (Orion.WaitForGump(1000)) {
+        Orion.Wait(100)
+            var gump0 = Orion.GetGump('last');
+            if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000008AF')) {
+                gump0.Select(Orion.CreateGumpHook(2));
+                while (Orion.IsWalking()) {
+                    Orion.StopWalking()
+                    Orion.Wait(100)
+                }
+                Orion.Terminate('resgump')
+            }
+
+        }
+        Orion.Wait(100);
+    }
+}
+
+
+function Healer() {
+while(Player.Dead()){
+ var healer = Orion.FindTypeEx('any', any, ground, 'live', 48).filter(function(Summon) {
+        return (Orion.Contains(Summon.Properties(), "Healer") || Orion.Contains(Summon.Properties(), "Fortune Teller"));
+    });
+    if(healer.length){
+    var x = healer[0].X()
+    var y = healer[0].Y()
+    var z = healer[0].Z()
+    Orion.WalkTo(x, y, z, 1)
+    } 
+    Orion.Wait(100)
+    }
+}
+
+
+function ReVamp() {
+while(!Orion.GumpExists('container', backpack)){
+Orion.UseObject(backpack)
+Orion.Wait(200)
+}
+DropDeathRobes()
+    if (Orion.SkillValue('Necromancy', 'real') >= 990) {
+        if (!Orion.BuffExists('vampiric embrace')) {
+            while (Player.LRC() < 40 && !Player.Dead() ) {
+                Orion.Dress('Lrc')
+                Orion.Wait(500)
+            }
+            while (!Orion.BuffExists('vampiric embrace') && !Player.Dead()) {
+                Orion.Cast('vampiric embrace')
+                Orion.Wait(500)
+            }
+            while (Player.LRC() >= 40 && !Player.Dead()) {
+                Orion.Dress('Main')
+                Orion.Wait(500)
+            }
+        }
+    }
+    else{
+     while (Player.MaxStam() < 150 && !Player.Dead()) {
+                Orion.Dress('Main')
+                Orion.Wait(200)
+            }
+    }
+}
+
+function DropDeathRobes() {
+    while (Orion.DragItemType("0x1F03", '0x08FD') && !Player.Dead()) {
+        Orion.Wait(500);
+        Orion.DropDraggedItemRelative(Orion.Random(-1, 2), Orion.Random(-1, 2), 0);
+        Orion.Wait(500);
+    }
+}
+
+function Remount() {
+if(!Orion.ObjAtLayer('mount')){
+    var items = Orion.FindTypeEx('-1', '-1', 'backpack'); // Use '-1' for any type and any color
+    var Ethy = items.filter(function(item) {
+        return Orion.Contains(item.Properties(), "Ethereal|Charger of|Rideable Polar Bear|Rideable"); // Use Properties() if Name() is not available
+    });
+    var mount = Orion.FindTypeEx(any, any, ground, 'canchangename|nothuman|live', '10')
+    if (Ethy.length > 0 && !Orion.BuffExists('dismount') && mount.length == 0) {
+        Orion.Print("Found Ethereal Mount: " + Ethy[0].Name());
+        while(Ethy.length > 0 && !Orion.BuffExists('dismount') && mount.length == 0 && !Orion.ObjAtLayer('mount')){
+        Orion.UseObject(Ethy[0].Serial()); // Use the serial of the first found Ethereal mount
+        Orion.Wait(200)
+        }
+    }
+    var mount = Orion.FindTypeEx(any, any, ground, 'canchangename|nothuman|live', '10')
+    if (mount.length > 0 && !Orion.BuffExists('dismount')) {
+        var Mount = mount[0].Serial()
+        while (!Orion.ObjAtLayer('Mount') && Orion.BuffExists('dismount') && !Player.Dead() && mount.length) {
+            var mount = Orion.FindTypeEx(any, any, ground, 'canchangename|nothuman|live', '10')
+            Orion.Say('all follow me');
+            Orion.Wait(2000)
+        }
+        while (!Orion.ObjAtLayer('Mount') && !Orion.BuffExists('dismount') && !Player.Dead() && mount.length) {
+            var mount = Orion.FindTypeEx(any, any, ground, 'canchangename|nothuman|live', '10')
+            Orion.Follow(Mount)
+            Orion.UseObject(Mount);
+            Orion.Wait(200)
+        }
+    }
+}
+}
+
+
+//--#Restock
+
+
+function Restock() {
+    var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    var maps = Orion.GetGlobal('maps');
+
+    if (!maps) {
+        MapsContainer();
+        return;
+    }
+
+    var container = Orion.FindObject('maps');
+    if (!container || !container.Exists()) {
+        Orion.Print('1196', 'Maps container invalid, recalling home.');
+        RecallToHouse();
+        return;
+    }
+
+    while (Orion.GetDistance(container.Serial()) > 1) {
+        Orion.WalkTo(container.X(), container.Y(), container.Z(), 1);
+        Orion.Wait(50);
+    }
+
+    while (!Orion.GumpExists('container', container.Serial())) {
+        Orion.UseObject(container.Serial());
+        Orion.Wait(400);
+    }
+
+    var Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', container.Serial());
+    if (Maps.length == 0 && Maps1.length == 0) {
+        LockerRestock();
+        Orion.Print('yes');
+        return;
+    }
+
+    while (Maps.length < 5 && Maps1.length != 0) {
+        Maps1 = Orion.FindTypeEx('0x14EB', '0x0AD1', container.Serial());
+        if (!Maps1.length) break;
+
+        Orion.DragItem(Maps1[0].Serial());
+        Orion.Wait(100);
+        Orion.DropDraggedItem(backpack);
+        Orion.Wait(1000);
+
+        Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    }
+
+    var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack);
+    var bag = lootbag.length > 0 ? lootbag[0].Serial() : backpack;
+
+    var Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', container.Serial());
+    var Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse');
+
+    if (Cypher.length == 0 && Cypher1.length == 0) {
+        Orion.Print('No More Decryption Cypher!');
+        Orion.Terminate('all');
+        return;
+    }
+
+    while (Cypher.length < 5 && Cypher1.length != 0) {
+        Cypher1 = Orion.FindTypeEx('0xA1E5', 'any', container.Serial());
+        if (!Cypher1.length) break;
+
+        Orion.DragItem(Cypher1[0].Serial());
+        Orion.Wait(100);
+        Orion.DropDraggedItem(bag);
+        Orion.Wait(1000);
+
+        Cypher = Orion.FindTypeEx('0xA1E5', 'any', backpack, 'recurse');
+    }
+}
+
+    
+function LockerRestock()
+{
+    var locker = Orion.FindTypeEx('0x4BF8|0x4BFC', any, ground, 'near', 24);
+    if (!locker.length) {
+        Orion.Print('No More Maps to work on');
+        Orion.Terminate('all');
+        return;
+    }
+
+    var container = locker[0];
+    if (!container || !container.Exists()) {
+        Orion.Print('Locker object invalid.');
+        Orion.Terminate('all');
+        return;
+    }
+
+    var Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+
+    while (Maps.length < 5) {
+
+        if (!container.Exists()) {
+            Orion.Print('Locker became invalid during walk.');
+            Orion.Terminate('all');
+            return;
+        }
+
+        while (Orion.GetDistance(container.Serial()) > 1) {
+            if (!container || !container.Exists()) {
+                Orion.Print('Locker lost during move.');
+                Orion.Terminate('all');
+                return;
+            }
+
+            var x = container.X();
+            var y = container.Y();
+            var z = container.Z();
+            Orion.WalkTo(x, y, z, 1);
+            Orion.Wait(50);
+        }
+
+        Orion.UseObject(container.Serial());
+        Orion.WaitForGump();
+
+        if (Orion.WaitForGump(1000)) {
+            Orion.Wait(50);
+            var gump1 = Orion.GetGump('last');
+
+            if (gump1 && !gump1.Replayed() && gump1.ID() === '0x000F3EBE') {
+                var result = gump1.Select(Orion.CreateGumpHook(10000));
+
+                if (result) {
+                    Orion.Print('No More Maps to work on');
+                    Orion.Terminate('all');
+                    return;
+                }
+
+                Orion.Wait(100);
+            }
+        }
+
+        Orion.Wait(500);
+        Orion.UseObject(container.Serial());
+
+        Maps = Orion.FindTypeEx('0x14EB', '0x0AD1', backpack);
+    }
+}
+
+
+
+function DetectTreasureLevel(tmap) {
+    if (!tmap || !tmap.Exists()) {
+        Orion.Print("1196", "Error: No treasure map object provided!");
+        TREASURE_LEVEL = "Unknown";
+        return TREASURE_LEVEL;
+    }
+
+    var props = tmap.Properties();
+    if (!props) {
+        Orion.Print("1196", "Treasure map has no properties!");
+        TREASURE_LEVEL = "Unknown";
+        return TREASURE_LEVEL;
+    }
+
+    props = props.toLowerCase();
+
+    // Reihenfolge ist wichtig → die seltensten zuerst prüfen
+    if (props.indexOf("massive") !== -1) {
+        TREASURE_LEVEL = "Massive";
+    }
+    else if (props.indexOf("grand") !== -1) {
+        TREASURE_LEVEL = "Grand";
+    }
+    else if (props.indexOf("greater") !== -1) {
+        TREASURE_LEVEL = "Greater";
+    }
+    else if (props.indexOf("lesser") !== -1) {
+        TREASURE_LEVEL = "Lesser";
+    }
+    else if (props.indexOf("fledgling") !== -1) {
+        TREASURE_LEVEL = "Fledgling";
+    }
+    else {
+        TREASURE_LEVEL = "Unknown";
+    }
+
+    return TREASURE_LEVEL;
+}
+
+function BadPoints(){
+Orion.SetBadLocation(827, 777, 9999999999)
+Orion.SetBadLocation(827, 778, 9999999999)
+Orion.SetBadLocation(827, 779, 9999999999)
+Orion.SetBadLocation(828, 777, 9999999999)
+Orion.SetBadLocation(828, 779, 9999999999)
+Orion.SetBadLocation(829, 777, 9999999999)
+Orion.SetBadLocation(829, 778, 9999999999)
+Orion.SetBadLocation(829, 779, 9999999999)
+Orion.SetBadLocation(536, 3114, 9999999999)
+}
+
+
+function GetMapCoords() {
+    // Benutze die bereits ausgewählte Map von ShowMapInfo
+    BadPoints();
+
+    var tmap = Orion.FindObject('tmap');
+    if (!tmap || !tmap.Exists()) {
+        Orion.Print('1196', 'No tmap object found.');
+        return;
+    }
+
+    var tmapSerial = tmap.Serial();
+
+    Orion.SetGlobal('found', 0);
+
+    while (!Orion.GumpExists('map', tmapSerial)) {
+        Orion.UseObject(tmapSerial);
+        Orion.Wait(100);
+    }
+
+    Orion.Wait(600);
+
+    var pos = Orion.QuestArrowPosition();
+    var x = pos.X();
+    var y = pos.Y();
+
+    Special();
+
+    Orion.SetTrack(true, x, y);
+    Orion.CloseGump('map', tmapSerial);
+
+    if (Orion.GetPathArray(x, y, Player.Z()).length === 0) {
+        Orion.AddIgnoreListObject('map', tmapSerial);
+        Orion.CharPrint(self, "1196", "Cant Reach The Map");
+        return;
+    }
+
+    Orion.WarMode(1);
+    Orion.SetGlobal('found', 1);
+
+    var luck = Player.Luck();
+    while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+        Orion.Dress('luck');
+        Orion.Wait(100);
+    }
+
+    Orion.CharPrint(self, "1196", "Running to: " + x + ", " + y);
+
+    while (Orion.GetDistance(x, y) > 1) {
+        Orion.WalkTo(x, y, 0, 1, 255, 1);
+        Orion.Wait(50);
+
+        if (Orion.GetPathArray(x, y, Player.Z()).length === 0 && Orion.GetDistance(x, y) > 1) {
+            Orion.AddIgnoreListObject('map', tmapSerial);
+            Orion.CharPrint(self, "1196", "Cant Reach The Map");
+
+            var luck = Player.Luck();
+            while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+                Orion.Dress('main');
+                Orion.Wait(100);
+            }
+
+            return;
+        }
+    }
+
+    Orion.CloseGump('map', tmapSerial);
+    Orion.ToggleScript("Specials", true);
+    Orion.ToggleScript("AutoEverything", true);
+    Orion.ToggleScript("AutoAttack", true);
+    Orion.ToggleScript("FollowNearestMob", true);
+
+    if (Orion.SkillValue('healing', 'base') >= 600) {
+        Orion.ToggleScript("AutoHealing", true);
+    }
+
+    Orion.CloseGump('map', tmapSerial);
+
+    var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)");
+    });
+
+    while (mobs.length === 0) {
+        var chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10);
+
+        if (chest.length === 0) {
+            Orion.RequestContextMenu(tmapSerial);
+            Orion.WaitContextMenuCliloc(tmapSerial, 3006148);
+
+            if (Orion.WaitForTarget(1500)) {
+                Orion.CharPrint(self, "1196", "Digging: " + x + ", " + y);
+                Orion.TargetTile('land|mine', x, y, Player.Z());
+               Orion.Wait(250);
+            }
+
+            chest = Orion.FindTypeEx('0xA308|0xB2D5', any, ground, 'near', 10);
+
+            while (Orion.GetDistance(x, y) > 2) {
+                Orion.WalkTo(x, y, 0, 2, 255, 1);
+                Orion.Wait(100);
+            }
+
+var repositionAttempts = 0;
+var maxAttempts = 13;
+var moveOffsets = [
+    {dx: 1, dy: 0},
+    {dx: -1, dy: 0},
+    {dx: 0, dy: 1},
+    {dx: 0, dy: -1},
+    {dx: 1, dy: 1},
+    {dx: -1, dy: 1},
+    {dx: 1, dy: -1},
+    {dx: -1, dy: -1},
+    {dx: 2, dy: 2},   
+    {dx: -2, dy: -2},
+    {dx: 0, dy: -2},
+    {dx: 0, dy: 2},
+    {dx: 2, dy: 2}
+
+];
+
+while (repositionAttempts < maxAttempts &&
+       (Orion.InJournal('you are standing on top') || Orion.InJournal('see that'))) {
+
+    var offset = moveOffsets[repositionAttempts % moveOffsets.length];
+    Orion.WalkTo(x + offset.dx, y + offset.dy, 0, 0, 255, 1);
+    Orion.ClearJournal();
+    Orion.Wait(800);
+
+    //  retry dig 
+    Orion.RequestContextMenu(tmap.Serial());
+    Orion.WaitContextMenuCliloc(tmap.Serial(), 3006148);
+    if (Orion.WaitForTarget(1500)) {
+        Orion.TargetTile('land|mine', x, y, Player.Z());
+    Orion.Wait(500);
+    }
+
+    repositionAttempts++;
+}
+
+
+            Orion.Wait(1500);
+        }
+
+        var mobs1 = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red')
+            .filter(function(Summon) {
+                return !Orion.Contains(Summon.Properties(), "summoned");
+            });
+
+        if (Player.Hits("%") < 75 && mobs1.length) {
+            Kill();
+        }
+
+        Remount();
+
+        mobs = Orion.FindTypeEx(any, any, 'ground', 'live', 24).filter(function(part) {
+            return Orion.Contains(part.Properties(), "(Guardian)");
+        });
+
+        Orion.Wait(100);
+    }
+
+    var luck = Player.Luck();
+    while (Player.Luck() == luck && Orion.GetDressList('luck') !== '') {
+        Orion.Dress('main');
+        Orion.Wait(100);
+    }
+
+    HandleMobs();
+
+    while (Orion.GetDistance(x, y) > 0) {
+        Orion.WalkTo(x, y, 0, 0, 255, 1);
+    }
+
+    LootNests();
+    Remount();
+
+    //while (Orion.BuffExists('enemy of one')) {
+        //Orion.Cast('enemy of one');
+        //Orion.Wait(200);
+   // }
+
+    var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack);
+    var bag = lootbag.length > 0 ? lootbag[0].Serial() : backpack;
+
+    while (!Orion.Dragging()) {
+        Orion.DragItem(tmapSerial);
+        Orion.Wait(100);
+    }
+
+    Orion.Wait(200);
+    Orion.DropDraggedItem(bag);
+    Orion.Wait(800);
+}
+
+
+
+function Kill(){
+        Orion.WalkTo(Player.X() + 1, Player.Y() + 1, Player.Z(), 0)
+       var luck = Player.Luck()
+        while (Player.Luck() == luck && Orion.GetDressList('luck') != '') {
+            Orion.Dress('main')
+            Orion.Wait(100)
+        }
+        var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 3, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+      var mobs1 = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+        while(mobs.length && mobs1.length == 0){
+        Orion.Attack(mobs[0].Serial())
+        if(Orion.GetDistance(mobs[0].Serial()) > 0){
+        Orion.Follow(mobs[0].Serial())
+        }
+        Orion.Wait(100)
+        var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 3, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+     var mobs1 = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+        }
+        if(mobs1.length == 0){
+        var luck = Player.Luck()
+        while (Player.Luck() == luck && Orion.GetDressList('luck') != '') {
+            Orion.Dress('luck')
+            Orion.Wait(100)
+        }}
+}
+
+function Special(){
+var pos = Orion.QuestArrowPosition();
+var x = pos.X();
+var y = pos.Y();
+        if(x == 860 && y == 808){
+        Orion.WalkTo(974, 748, -88)
+        }
+         if(x == 819 && y == 819){
+        Orion.WalkTo(974, 748, -88)
+        }
+         if(x == 724 && y == 812){
+        Orion.WalkTo(974, 748, -88)
+        }
+}
+
+//--#Handle Mobs
+function HandleMobs(){
+ var pos = Orion.FindTypeEx('0xB2D5', any, 'ground', 'item', '24')
+        var x = pos[0].X();
+        var y = pos[0].Y();
+ var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+   while (mobs.length == 0) {
+   Orion.Wait(100)
+ var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+   }
+    var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+   if (mobs.length) {
+   Orion.Wait(2000)
+   //Orion.ToggleScript("EoO", true);
+    while (mobs.length || Orion.IsWalking() || Orion.GetDistance(x, y) > 10) {
+        if(Player.Hits("%") <= 60){
+       Emergency()
+       }
+       if(Orion.GetDistance(x, y) >= 10 && mobs.length == 0){
+       Orion.WalkTo(x, y, 0, 3)
+       }      
+                Orion.Wait(200)
+ var mobs = Orion.FindTypeEx(any, any, 'ground', 'mobile', 24).filter(function(part) {
+        return Orion.Contains(part.Properties(), "(Guardian)")
+    });
+        }}
+Orion.ToggleScript("AutoEverything", true);
+Orion.ToggleScript("AutoAttack", true);
+Orion.Wait(100)
+Orion.ToggleScript("Specials", true);
+//Orion.ToggleScript("AutoInsure", true);
+if (Orion.ScriptRunning("FollowNearestMob")) {
+    Orion.ToggleScript("FollowNearestMob", true);
+}
+if (Orion.SkillValue('healing', 'base') >= 600) {
+    Orion.ToggleScript("AutoHealing", true);
+}
+//Orion.ToggleScript("EoO", true);
+Orion.GetStatus(self)
+while(Player.Poisoned()){
+Orion.GetStatus(self)
+Orion.CastTarget('cleanse by fire', self)
+Orion.Wait(500)
+}
+}
+
+
+function Emergency() {
+var x = Player.X()
+var y = Player.Y()
+var z = Player.Z()
+    Orion.Print('40', 'EMERGENCY MODE ACTIVATED! Retreating!');
+    Orion.PauseScript('FollowNearestMob')
+    Orion.PauseScript('AutoAttack')
+   // Orion.PauseScript('AutoEverything')
+    fleeSmart();
+    // Warten, bis HP wieder gut
+    while (Player.Hits("%") < 80) {
+            if (!Orion.DisplayTimerExists('Confidence') && Player.Mana() > 5 && Player.Hits("%") < 80) { // Bushido 50.0 or above
+                var remain = Orion.BuffTimeRemaining('Confidence') || 0
+                Orion.Cast('Confidence');
+                Orion.Wait(650);
+                if (Orion.BuffExists('Confidence') && remain < Orion.BuffTimeRemaining('Confidence')) {
+                    Orion.AddDisplayTimer('Confidence', 4000, 'AboveChar', 'Circle|Bar', 'Confidence', -1, 25, '906', 0xff, '0xFFFFFF');
+                }
+            }
+             var mobs1 = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 3, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+        if(mobs1.length){
+        Orion.Attack(mobs1[0].Serial())
+        }
+            var mobs = Orion.FindTypeEx('any', 'any', ground, 'mobile|live', 12, 'gray|red|orange').filter(function(part) {
+                    return Orion.Contains(part.Properties(), "(Guardian)")
+                });
+        if (mobs.length > 0 && Player.Hits("%") < 80) {
+            Orion.Print('40', 'Mobs too close. Continue fleeing!');
+           fleeSmart();
+        }
+            if(Orion.DisplayTimerExists('Confidence') && Player.Hits("%") < 80 && Player.Mana() > 5 && !Player.Poisoned() && !Player.YellowHits()){ 
+            Orion.CastTarget('close wounds', self)
+            Orion.Wait(200)
+            }
+        var mobs1 = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 3, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+        if(mobs1.length){
+        Orion.Attack(mobs1[0].Serial())
+        }
+            var mobs = Orion.FindTypeEx('any', 'any', ground, 'mobile|live', 12, 'gray|red|orange').filter(function(part) {
+                    return Orion.Contains(part.Properties(), "(Guardian)")
+                });
+        if (mobs.length > 0 && Player.Hits("%") < 80) {
+            Orion.Print('40', 'Mobs too close. Continue fleeing!');
+           fleeSmart();
+        }
+			while(Player.Poisoned()){
+			Orion.CastTarget('cleanse by fire', self)
+			Orion.Wait(200)
+			}
+        Orion.Wait(100);
+        // Gibt es Mobs in 8 Tiles?
+        var mobs = Orion.FindTypeEx('any', 'any', ground, 'mobile|live', 12, 'gray|red|orange').filter(function(part) {
+                    return Orion.Contains(part.Properties(), "(Guardian)")
+                });
+        if (mobs.length > 0 && Player.Hits("%") < 80) {
+            Orion.Print('40', 'Mobs too close. Continue fleeing!');
+           fleeSmart();
+        }
+    }
+    Orion.Print('65', 'HP recovered (>80%) – resuming combat.');
+    Orion.ResumeScript('AutoAttack') 
+    Orion.ResumeScript('FollowNearestMob')
+    Orion.WalkTo(x, y, z)
+}
+
+var lastFleeDir = null;
+var lastFleeTimestamp = 0;
+
+function fleeSmart() {
+    var px = Player.X();
+    var py = Player.Y();
+    var pz = Player.Z();
+
+    // 8 Bewegungsrichtungen
+    var dirs = [
+        {name:'E',  dx:  1, dy:  0},
+        {name:'W',  dx: -1, dy:  0},
+        {name:'S',  dx:  0, dy:  1},
+        {name:'N',  dx:  0, dy: -1},
+        {name:'SE', dx:  1, dy:  1},
+        {name:'NE', dx:  1, dy: -1},
+        {name:'SW', dx: -1, dy:  1},
+        {name:'NW', dx: -1, dy: -1}
+    ];
+
+    // -------------------------------
+    // 1. Mobs erkennen
+    // -------------------------------
+    var mobs = Orion.FindTypeEx('any', 'any', ground, 'mobile|live', 20, 'red|gray|orange') .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)");
+            });
+    if (!mobs || mobs.length === 0) {
+        return fleeRandom(); // Kein Mob → normal ausweichen
+    }
+
+    // Durchschnittliche Position der Mobs (Gefahrenrichtung)
+    var mx = 0, my = 0;
+    for (var i = 0; i < mobs.length; i++) {
+        mx += mobs[i].X();
+        my += mobs[i].Y();
+    }
+    mx /= mobs.length;
+    my /= mobs.length;
+
+    // Gefahrenrichtung
+    var dangerDX = px - mx;
+    var dangerDY = py - my;
+
+    // Normieren: nur Richtung, nicht Stärke
+    var len = Math.sqrt(dangerDX*dangerDX + dangerDY*dangerDY);
+    if (len === 0) len = 1;
+    dangerDX /= len;
+    dangerDY /= len;
+
+    // -------------------------------
+    // 2. Richtung sperren (Anti Ping-Pong)
+    // -------------------------------
+    var time = Orion.Now();
+    var blockedDir = null;
+    if (time - lastFleeTimestamp < 2500 && lastFleeDir !== null) {
+        blockedDir = lastFleeDir;
+    }
+
+    // -------------------------------
+    // 3. Beste Fluchtrichtung bestimmen
+    // -------------------------------
+    var bestDir = null;
+    var bestDot = -9999;
+
+    for (var d = 0; d < dirs.length; d++) {
+        // Verbotene Richtung?
+        if (blockedDir === dirs[d].name) continue;
+
+        // Richtung vom Spieler weg testen
+        var dot = dirs[d].dx * dangerDX + dirs[d].dy * dangerDY;
+
+        // Wir wollen möglichst weit **vom Mob weg**, daher MAX dot
+        if (dot > bestDot) {
+            // Prüfen ob Weg frei
+            var fleeX = px + dirs[d].dx * 20;
+            var fleeY = py + dirs[d].dy * 20;
+            var path = Orion.GetPathArray(fleeX, fleeY, pz, 0);
+
+            if (path && path.length > 0 && path.length < 25) {
+                bestDot = dot;
+                bestDir = dirs[d];
+            }
+        }
+    }
+
+    // Falls wir KEINE erlaubte Richtung finden → Notfall → alles erlauben
+    if (!bestDir) {
+        return fleeRandom();
+    }
+
+    // -------------------------------
+    // 4. Weg laufen
+    // -------------------------------
+    lastFleeDir = bestDir.name;
+    lastFleeTimestamp = Orion.Now();
+
+    var tx = px + bestDir.dx * 20;
+    var ty = py + bestDir.dy * 20;
+
+    Orion.Print('0x0035', 'Fleeing smart → ' + bestDir.name);
+    Orion.WalkTo(tx, ty, pz, 0);
+}
+
+
+function fleeRandom() {
+    var px = Player.X();
+    var py = Player.Y();
+    var pz = Player.Z();
+
+    // 8 Richtungen
+    var dirs = [
+        { dx:  1, dy:  0 }, // East
+        { dx: -1, dy:  0 }, // West
+        { dx:  0, dy:  1 }, // South
+        { dx:  0, dy: -1 }, // North
+        { dx:  1, dy:  1 }, // SE
+        { dx:  1, dy: -1 }, // NE
+        { dx: -1, dy:  1 }, // SW
+        { dx: -1, dy: -1 }  // NW
+    ];
+
+  //   Mischen für zufällige Richtung
+    for (var i = dirs.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = dirs[i];
+          dirs[i] = dirs[j];
+          dirs[j] = tmp;
+      }
+
+    // Jede Richtung testen
+    for (var i = 0; i < dirs.length; i++) {
+        var dx = dirs[i].dx;
+        var dy = dirs[i].dy;
+
+        var fleeX = px + dx * 20;
+        var fleeY = py + dy * 20;
+
+        var path = Orion.GetPathArray(fleeX, fleeY, pz, 0);
+        if (path && path.length > 0 && path.length < 25) {
+            Orion.Print('0x0035', 'Running away to ' + fleeX + ',' + fleeY);
+            Orion.WalkTo(fleeX, fleeY, pz, 0);
+            return;
+        }
+    }
+}
+
+//--#Loot Nest
+
+function LootNests() {
+    var chest2 = Orion.FindTypeEx('0xB2D5', any, 'ground', 'item', '15')
+    var lootbag = Orion.FindTypeEx('0x0E75|0x0E79|0x0E76', any, backpack)
+    if(lootbag.length > 0){
+    var bag = lootbag[0].Serial()
+    } else {
+    var bag = backpack
+    }
+    if (chest2.length > 0) {
+        var content = Orion.FindTypeEx(any, any, chest2[0].Serial())
+        while (!Orion.GumpExists('container', chest2[0].Serial()) || content.length == 0) {
+            Orion.UseObject(chest2[0].Serial());
+            Orion.Wait(200)
+            var content = Orion.FindTypeEx(any, any, chest2[0].Serial())
+        }
+        NestCounter()
+        NestsCounterRun()
+        Orion.Wait(200)
+        var Maps = Orion.FindTypeEx('0x14EB', 'any', chest2[0].Serial())
+          //  .filter(function(part) { return !Orion.Contains(part.Properties(), "Fledgling") && !Orion.Contains(part.Properties(), "Lesser"); });
+        var EventItem = Orion.FindTypeEx('any|!0x0E76', 0x0AE0, chest2[0].Serial()).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Of The Umbrascale"));
+        });
+ var DragonPet = Orion.FindTypeEx(any, any, chest2[0].Serial()).filter(function(part) {
+            return Orion.Contains(part.Properties(), "Mature Umbrascale Dragon Egg");
+        });
+        var contents = Orion.FindTypeEx('any', 'any', chest2[0].Serial(), '', 2).filter(function(item) {
+            var props = item.Properties();
+            if (!Orion.Contains(props, "Reinforced")) {
+                return false;
+            }
+            if (Orion.Contains(props, "Invul") &&
+                !Orion.Contains(props, "Wood")) {
+                return true;
+            }
+            if (Orion.Contains(props, "Gargish Platemail")) {
+                return Orion.Contains(props, "Fortification") || Orion.Contains(props, "Invul"); // nur wenn auch Fortification
+            }
+            if (Orion.Contains(props, "Platemail") ||
+                Orion.Contains(props, "Bone") ||
+                Orion.Contains(props, "Studded") ||
+                Orion.Contains(props, "Hide") ||
+                Orion.Contains(props, "Dragon")) {
+                return true;
+            }
+            return false;
+        });
+
+        while (EventItem.length > 0 || Maps.length > 0 || DragonPet.length > 0 || contents.length > 0) {
+        var pos = Orion.FindTypeEx(0xB2D5, any, ground)
+        if(pos){
+        var x = pos[0].X();
+        var y = pos[0].Y();
+       while (Orion.GetDistance(x, y) > 0) {
+            Orion.WalkTo(x, y, 0, 0, 255, 1);
+        }}
+       //if(Orion.BuffExists('enemy of one')){
+		//Orion.Cast('enemy of one')
+		//Orion.Wait(100)
+		//}
+		var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 2, 'gray|criminal|orange|red').filter(function(Summon) {
+        return !Orion.Contains(Summon.Properties(), "summoned");
+        });
+        if(mobs.length){
+        Orion.Attack(mobs[0].Serial())
+         }
+            if (Maps.length > 0) {
+                Orion.Print('Looting Map')
+                    Orion.DragItem(Maps[0].Serial())
+                    Orion.Wait(100)
+                    Orion.DropDraggedItem(backpack);
+                Orion.Wait(1000)
+            }
+             if (DragonPet.length > 0) {
+              var elapsedTime = Shared.GetVar('elapsedTime') || "0h 0m 0s";
+             addHalloweenMessage("Mature Dragon Egg Found from a  " + TREASURE_LEVEL + " Map! " + elapsedTime);
+                Orion.Print('Looting Mature Dragon Egg')
+                    Orion.DragItem(DragonPet[0].Serial())
+                    Orion.Wait(100)
+                    Orion.DropDraggedItem(backpack);
+                Orion.Wait(1000)
+            }
+            if (contents.length > 0) {
+                Orion.Print('Looting Refinemnt')
+                    Orion.DragItem(contents[0].Serial())
+                  Orion.Wait(200)
+                     Orion.DropDraggedItem(bag);
+                Orion.Wait(1000)
+            }
+            if (EventItem.length > 0) {
+                Orion.Print('Looting Event Item')
+                    Orion.DragItem(EventItem[0].Serial())
+                  Orion.Wait(200)
+                     Orion.DropDraggedItem(bag);
+               Orion.Wait(1000)
+            }
+            Orion.Wait(100)
+            var Maps = Orion.FindTypeEx('0x14EB', 'any', chest2[0].Serial())
+          //  .filter(function(part) { return !Orion.Contains(part.Properties(), "Fledgling") && !Orion.Contains(part.Properties(), "Lesser"); });
+            var EventItem = Orion.FindTypeEx('any|!0x0E76', 0x0AE0, chest2[0].Serial()).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Of The Umbrascale"));
+        });
+ var DragonPet = Orion.FindTypeEx(any, any, chest2[0].Serial()).filter(function(part) {
+            return Orion.Contains(part.Properties(), "Mature Umbrascale Dragon Egg");
+        });
+            var contents = Orion.FindTypeEx('any', 'any', chest2[0].Serial(), '', 2).filter(function(item) {
+                var props = item.Properties();
+                if (!Orion.Contains(props, "Reinforced")) {
+                    return false;
+                }
+                if (Orion.Contains(props, "Invul") &&
+                    !Orion.Contains(props, "Wood")) {
+                    return true;
+                }
+                if (Orion.Contains(props, "Gargish Platemail")) {
+                    return Orion.Contains(props, "Fortification") || Orion.Contains(props, "Invul"); // nur wenn auch Fortification
+                }
+                if (Orion.Contains(props, "Platemail") ||
+                    Orion.Contains(props, "Bone") ||
+                    Orion.Contains(props, "Studded") ||
+                    Orion.Contains(props, "Hide") ||
+                    Orion.Contains(props, "Dragon")) {
+                    return true;
+                }
+                return false;
+            });
+        }
+    }
+     var isEggsEnabled = Shared.GetVar('Egg') || false;
+             if(isEggsEnabled == true){
+              var DecoEgg = Orion.FindTypeEx(any, any, chest2[0].Serial()).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Dragon Egg"));
+        });
+         while (DecoEgg.length > 0) {
+                    Orion.DragItem(DecoEgg[0].Serial())
+                    Orion.Wait(100)
+                    Orion.DropDraggedItem(bag);
+                    Orion.Wait(400)
+                    var DecoEgg = Orion.FindTypeEx(any, any, chest2[0].Serial()).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Dragon Egg"));
+        });
+            }}
+            while(!Orion.GumpExists('container', bag)){
+            Orion.UseObject(bag)
+            Orion.Wait(400)            
+            }
+    BurnNest()
+}
+
+function NestsCounterRun() {
+    var nests = Shared.GetVar('nests') || 0;
+    nests = parseInt(nests);
+    nests += 1;
+    Shared.AddVar('nests', nests)
+    updateHalloweenDropGump()
+}
+
+function NestCounter() {
+    var regName = TREASURE_LEVEL + " Nest";
+    var currentValue = Orion.RegRead(regName);
+    if (currentValue == null || currentValue == "") {
+        currentValue = 0;
+    } else {
+        currentValue = parseInt(currentValue);
+    }
+    var newValue = currentValue + 1;
+    Orion.RegWrite(regName, newValue);
+    Orion.Print(TREASURE_LEVEL + " Nests opened: " + newValue);
+}
+
+function ShowNestCounters() {
+var Massive = Orion.RegRead("Massive Nest") || 0
+var Grand = Orion.RegRead("Grand Nest") || 0
+var Greater = Orion.RegRead("Greater Nest") || 0
+var lesser = Orion.RegRead("lesser Nest") || 0
+var fledgling = Orion.RegRead("fledgling Nest") || 0
+Orion.Print("Nests opened:");
+Orion.Print("Massive: "+ Massive);
+Orion.Print("Grand: "+ Grand);
+Orion.Print("Greater: "+ Greater);
+Orion.Print("lesser: "+ lesser);
+Orion.Print("fledgling: "+ fledgling);
+}
+
+//--#Burn Nest
+
+function BurnNest() {
+    var nest = Orion.FindTypeEx('0xB2D5', any, 'ground', 'item', '15')
+        Orion.RequestContextMenu(nest[0].Serial());
+        Orion.Wait(10);
+        Orion.WaitContextMenuID(nest[0].Serial(), 306);
+        if (Orion.WaitForGump(1000)) {
+             Orion.Wait(100);
+            var gump0 = Orion.GetGump('last');
+            if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000001DA')) {
+                gump0.Select(Orion.CreateGumpHook(3));
+            }
+        }
+}
+
+//--#Samp Modules
+
+function AutoAttack() {
+    var lastTargetSerial = null;
+    var lastHitsValue = -1;
+ Orion.ClearIgnoreList('mobs')
+
+    while (true) {
+        var enemies = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|live|inlos|ignorefriends|ignoreself', 24, 'gray|criminal')
+            .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)");
+            });
+         if(enemies.length == 0) {
+          var enemies = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|live|inlos|ignorefriends|ignoreself', 24, 'red|gray|orange')
+            .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)");
+            });
+         }         
+         var enemies = enemies.sort(function(a, b) {
+            return Orion.GetDistance(a.Serial()) - Orion.GetDistance(b.Serial());
+        });
+
+        if (!Orion.ScriptRunning('Specials')) {
+            Orion.ToggleScript('Specials');
+        }
+        if (enemies.length > 0) {
+            var target = enemies[0];
+
+            // Falls neuer Gegner getaggt wird
+            if (lastTargetSerial !== target.Serial()) {
+                Orion.ClearHighlightCharacters('all');
+                Orion.AddHighlightCharacter(target.Serial(), '0x0022', true); // Rot
+                Orion.CharPrint(target.Serial(), '0x34', '*TARGET*');
+                lastTargetSerial = target.Serial();
+                lastHitsValue = -1; // Reset, damit bei neuem Ziel auch HP ausgegeben werden
+            }
+
+            // HP-Monitoring: Nur bei Änderung ausgeben
+            var currentHits = target.Hits();
+            var name = target.Name()
+            if (currentHits !== lastHitsValue) {
+              //  Orion.Print(name + " Hits Remaining: " + (currentHits * 4) + "%");
+                lastHitsValue = currentHits;
+            }
+
+            Orion.ClientLastTarget(target.Serial());
+            Orion.Attack(target.Serial());
+        }
+
+        Orion.Wait(250);
+    }
+}
+
+function EoO() {
+    while (true) {
+        if (Player.Mana() > 10 && Player.Hits('%') >= 80) {
+            var mobs = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|ignorefriends|inlos', 24, 'gray|criminal|orange|red') .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)") && !Orion.Contains(mob.Properties(), "Cultist");
+            });
+            var paraList = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|ignorefriends|inlos', 24, 'gray|criminal|orange|red') .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)") && Orion.Contains(mob.Properties(), "Cultist");
+            });
+
+            if (paraList.length > 0) {
+                var paraGraphic = paraList[0].Graphic();
+                var allParagonsSame = true;
+
+                // Prüfe, ob alle Paragons die gleiche Grafik haben
+                for (var i = 1; i < paraList.length; i++) {
+                    if (paraList[i].Graphic() !== paraGraphic) {
+                        allParagonsSame = false;
+                        break;
+                    }
+                    Orion.Wait(1);
+                }
+
+                if (allParagonsSame) {
+                    var allMobsSameAsParagon = true;
+                    for (var j = 0; j < mobs.length; j++) {
+                        if (mobs[j].Graphic() !== paraGraphic) {
+                            allMobsSameAsParagon = false;
+                            break;
+                        }
+                        Orion.Wait(1);
+                    }
+
+                    // Nur wenn ALLE Paragons und ALLE Mobs dieselbe Grafik haben
+                    //if (allMobsSameAsParagon) {
+                       // if (!Orion.BuffExists('Enemy of One')) {
+                           // Orion.Cast('Enemy of One');
+                           // Orion.Wait(100);
+                       // }
+                        //Orion.Wait(1);
+                    //} else {
+                        i//f (Orion.BuffExists('Enemy of One')) {
+                           // Orion.Cast('Enemy of One'); // Buff aus
+                           // Orion.Wait(100);
+                       // }
+                        //Orion.Wait(1);
+                    //}
+                  //  Orion.Wait(1);
+               // } else {
+                  //  if (Orion.BuffExists('Enemy of One')) {
+                       // Orion.Cast('Enemy of One'); // Buff aus
+                       // Orion.Wait(100);
+                   // }
+                   // Orion.Wait(1);
+              //  }
+              //  Orion.Wait(1);
+            //} else {
+                // Kein Paragon da → Enemy of One aus, falls aktiv
+               // if (Orion.BuffExists('Enemy of One')) {
+                  //  Orion.Cast('Enemy of One');
+                  //  Orion.Wait(100);
+                //}
+                Orion.Wait(1);
+            }
+            Orion.Wait(1);
+        }
+        Orion.Wait(40);
+    }
+}
+}   
+function Specials() {
+    var multiAbilities = ['Whirlwind Attack', 'Frenzied Whirlwind', 'Lightning Arrow'];
+    var singleAbilities = ['Armor Ignore', 'Double Strike', 'Psychic Attack', 'Double Shot'];
+
+    while (true) {
+        var abilityNames = Orion.GetCurrentAbilityNames();
+        if (!abilityNames) {
+            Orion.Wait(100);
+            continue;
+        }
+
+        var parts = Orion.Split(abilityNames, ',');
+        var primary = parts[0].trim();
+        var secondary = parts.length > 1 ? parts[1].trim() : null;
+
+        // ==== Gegner finden ====
+        var range = (Orion.SkillValue('Throwing') > 1000 || Orion.SkillValue('Archery') > 1000) ? 11 : 1;
+        var enemies = Orion.FindTypeEx(
+            any, any, "ground",
+            "mobile|live|ignoreself|ignorefriends",
+            range, "gray|enemy|red|criminal"
+        ).filter(function(mob) {
+            return !Orion.Contains(mob.Properties(), "summoned");
+        });
+        
+         var enemies = enemies.sort(function(a, b) {
+            return Orion.GetDistance(a.Serial()) - Orion.GetDistance(b.Serial());
+        });
+        var count = enemies.length;
+
+        if (enemies.length === 0) {
+            Orion.Wait(100);
+            Orion.UseAbility('Primary', true);
+            continue;
+        }
+        // ==== Bushido und Ability-Handling ====
+        var bushido = Orion.SkillValue('Bushido');
+
+        // ==== MULTI-TARGET ====
+        if (count >= 3) {
+            if (multiAbilities.indexOf(primary) !== -1) {
+                Orion.UseAbility('Primary', true);
+            } else if (multiAbilities.indexOf(secondary) !== -1) {
+                Orion.UseAbility('Secondary', true);
+            } else if (bushido >= 800) { // Momentum Strike ab 80.0
+            if(!Orion.BuffExists('Momentum Strike')){
+                Orion.Cast('Momentum Strike');
+                }
+                Orion.Wait(10);
+            } else{ 
+            if (singleAbilities.indexOf(primary) !== -1) {
+                Orion.UseAbility('Primary', true);
+            } else if (singleAbilities.indexOf(secondary) !== -1) {
+                Orion.UseAbility('Secondary', true);
+            }
+            }
+        }
+        // ==== SINGLE-TARGET ====
+        else {
+            if (singleAbilities.indexOf(primary) !== -1) {
+                Orion.UseAbility('Primary', true);
+            } else if (singleAbilities.indexOf(secondary) !== -1) {
+                Orion.UseAbility('Secondary', true);
+            } else {
+                Orion.UseAbility('Primary', true);
+            }
+        }
+        Orion.Wait(100);
+    }
+}
+
+function AutoEverything() {
+    Orion.SetTimer('follow')
+    while (true) {
+        var weaponObject = Orion.ObjAtLayer('RightHand');
+        if (!weaponObject) weaponObject = Orion.ObjAtLayer('LeftHand');
+        ///Evasion
+        if (Orion.SkillValue('bushido', 'base') > 600 && weaponObject) {
+            var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 12, 'gray|criminal|orange|red').filter(function(Summon) {
+                return !Orion.Contains(Summon.Properties(), "summoned") && Orion.Contains(Summon.Properties(), "(Guardian)");
+            });
+            while (Player.Hits() < Player.MaxHits() - 25 && !Player.Dead() && !Orion.DisplayTimerExists('evadetimer') && Player.Mana() > 5 && weaponObject && (mobs.length > 0 || Player.Hits("%") < 60)) {
+                var weaponObject = Orion.ObjAtLayer('RightHand');
+                if (!weaponObject) weaponObject = Orion.ObjAtLayer('LeftHand');
+                var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 12, 'gray|criminal|orange|red').filter(function(Summon) {
+                    return !Orion.Contains(Summon.Properties(), "summoned") && Orion.Contains(Summon.Properties(), "(Guardian)");
+                });
+                while (!Orion.BuffExists('Evasion') && weaponObject && !Player.Dead() && (mobs.length > 0 || Player.Hits("%") < 60)) {
+                    var weaponObject = Orion.ObjAtLayer('RightHand');
+                    if (!weaponObject) weaponObject = Orion.ObjAtLayer('LeftHand');
+                    Orion.Cast('Evasion');
+                    Orion.Wait(25)
+                    var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 12, 'gray|criminal|orange|red').filter(function(Summon) {
+                        return !Orion.Contains(Summon.Properties(), "summoned") && Orion.Contains(Summon.Properties(), "(Guardian)");
+                    });
+                }
+                Orion.Wait(25)
+                var timer = Orion.BuffTimeRemaining('Evasion')
+                if (Orion.BuffExists('Evasion') && !Orion.DisplayTimerExists('evadetimer')) {
+                    Orion.AddDisplayTimer('evadetimer', timer + 20000, 'UnderChar', 'Circle|Bar', 'Evade', 0, 25, '0xFFFFFF', 0xff, '0xFFFFFF')
+                }
+            }
+
+            ///Counter Attack
+                var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 12, 'gray|criminal|orange|red').filter(function(Summon) {
+                    return !Orion.Contains(Summon.Properties(), "summoned") && Orion.Contains(Summon.Properties(), "(Guardian)");
+                });
+            if (mobs.length > 0) {
+                if (!Orion.BuffExists('Counter Attack') && Player.Mana() > 5 && !Orion.DisplayTimerExists('Confidence') && Player.Hits('%') >= 80) {
+                    if (!Orion.BuffExists('Evasion')) {
+                        Orion.Cast('Counter Attack');
+                        Orion.Wait(20)
+                    }
+                    Orion.Wait(20)
+                }
+            }
+
+            ///Confidence
+            if (Player.Hits('%') <= 80 && !Orion.DisplayTimerExists('Confidence') && !Orion.BuffExists('Evasion') && Player.Mana() > 5) { // Bushido 50.0 or above
+                var remain = Orion.BuffTimeRemaining('Confidence') || 0
+                Orion.Cast('Confidence');
+                Orion.Wait(600);
+                if (Orion.BuffExists('Confidence') && remain < Orion.BuffTimeRemaining('Confidence')) {
+                    Orion.AddDisplayTimer('Confidence', 4000, 'AboveChar', 'Circle|Bar', 'Confidence', -1, 25, '906', 0xff, '0xFFFFFF');
+                }
+            }
+            Orion.Wait(20)
+        }
+
+        ///Consecrate Weapon
+        if (Orion.SkillValue('chivalry', 'base') > 1400 && weaponObject && !Player.Frozen() && Player.Hits('%') >= 50) {
+            if (!Orion.BuffExists('Consecrate Weapon') && Player.Mana() > 10) {
+            var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red').filter(function(Summon) {
+                return !Orion.Contains(Summon.Properties(), "summoned");
+            });
+                if (mobs.length > 0) {
+                    Orion.Cast('Consecrate Weapon');
+                    Orion.Wait(70);
+                }
+            }
+            Orion.Wait(20)
+        }
+        Orion.Wait(50)
+    }
+}
+
+function AutoHealing() {
+    while (true) {
+        var belt = Orion.FindType('0xA1F6', -1, 'backpack');
+        if (belt.length && !Player.Dead()) {
+            beltSerial = belt[0];
+            while (!Orion.GumpExists('container', beltSerial)) {
+                Orion.OpenContainer(beltSerial);
+                Orion.Wait(200);
+            }
+        }
+        // Handle Poison if Healing Skill is Available
+        if (Orion.BuffExists('0x755d') && !Orion.BuffExists('0x7596')) { // Poison active, not healing
+            while (!Orion.BuffExists('0x7596') && Orion.BuffExists('0x755d')) {
+                Orion.BandageSelf();
+                Orion.Wait(10)
+            }
+            var timer = Orion.BuffTimeRemaining('0x7596')
+            if (!Orion.DisplayTimerExists('Healing') && Orion.BuffExists('0x7596')) {
+                Orion.AddDisplayTimer('Healing', timer, 'UnderChar', 'Circle|Bar', 'heal', -1, 25, '906', 0xff, '0xFFFFFF');
+            }
+        }
+
+        // Heal Self if Healing Skill is Available
+        if (Player.Hits() < Player.MaxHits() * 0.95 && !Orion.BuffExists('0x7596')) {
+            while (!Orion.BuffExists('0x7596') && Player.Hits() < Player.MaxHits() * 0.95) {
+                Orion.BandageSelf();
+                Orion.Wait(10)
+            }
+            var timer = Orion.BuffTimeRemaining('0x7596')
+            if (!Orion.DisplayTimerExists('Healing') && Orion.BuffExists('0x7596')) {
+                Orion.AddDisplayTimer('Healing', timer, 'UnderChar', 'Circle|Bar', 'heal', -1, 25, '906', 0xff, '0xFFFFFF');
+            }
+        }
+        if (Player.Hits() > Player.MaxHits() * 0.75) {
+            var alliesSerials = {};
+            // Friends
+            var friends = Orion.GetFriendList();
+            for (var i in friends) {
+                alliesSerials[friends[i]] = true;
+            }
+            // Party Members
+            var partyMembers = Orion.PartyMembers();
+            for (var j in partyMembers) {
+                alliesSerials[partyMembers[j]] = true;
+            }
+            // Grüne Charaktere im Umkreis
+            var greens = Orion.FindTypeEx('any', '-1', 'ground', 'mobile|live|ignorefriends|inlos|human', 2, 'green');
+            for (var k in greens) {
+                var g = greens[k];
+                if (g && g.Serial())
+                    alliesSerials[g.Serial()] = true;
+            }
+            for (var serial in alliesSerials) {
+                var obj = Orion.FindObject(serial);
+                if (obj && obj.Exists()) {
+                    Orion.GetStatus(serial);
+                    if (obj.Hits('%') < 90 && Orion.GetDistance(obj.X(), obj.Y()) <= 2 && !Orion.BuffExists("healing skill") && !Orion.DisplayTimerExists('Healing')) {
+                        Orion.Print('Bandaging Ally: ' + obj.Name());
+                        while (!Orion.BuffExists('healing skill') && obj.Hits('%') < 90 && Orion.GetDistance(obj.X(), obj.Y()) <= 2) {
+                            Orion.BandageTarget(serial);
+                            Orion.Wait(10);
+                        }
+                        var timer = Orion.BuffTimeRemaining('healing skill');
+                        if (!Orion.DisplayTimerExists('Healing') && Orion.BuffExists('healing skill')) {
+                            Orion.AddDisplayTimer('Healing', timer, 'UnderChar', 'Circle|Bar', 'heal', -1, 25, '906', 0xff, '0xFFFFFF');
+                        }
+                    }
+                }
+                Orion.Wait(50);
+            }
+        }     
+
+    }
+}
+
+function isSummoned(properties) {
+    return properties.indexOf('(summoned)') !== -1;
+}
+
+function FollowNearestMob() {
+    Orion.ClearIgnoreList('mobs');
+    while (true) {
+        Orion.UseIgnoreList('mobs')
+        // --- Guardian-Mobs suchen (keine Evos, keine Colossi, keine Summons) ---
+         var mobs = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|live|inlos|ignorefriends|ignoreself', 24, 'gray|criminal')
+            .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)");
+            });
+         if(mobs.length == 0) {
+          var mobs = Orion.FindTypeEx('any', 'any', 'ground', 'mobile|live|inlos|ignorefriends|ignoreself', 24, 'red|gray|orange')
+            .filter(function(mob) {
+                return Orion.Contains(mob.Properties(), "(Guardian)");
+            });
+         }     
+        if (mobs.length === 0) {
+            Orion.Wait(100);
+            continue;
+        }
+        mobs.sort(function(a, b) { return a.Distance() - b.Distance(); });
+        var current = mobs[0].Serial();
+        while (!Player.Dead() && Orion.ObjectExists(current)) {
+            var obj = Orion.FindObject(current);
+            if (!obj) break;
+            var path = Orion.GetPathArray(obj.X(), obj.Y(), obj.Z(), 1).length
+            if(Orion.GetDistance(current) > 1 && path != 0){
+            Orion.WalkTo(obj.X(), obj.Y(), obj.Z(), 1);
+            }
+            Orion.Wait(100);
+            var nearby = Orion.FindTypeEx('any|!0x00A4|!0x033D', '-1', 'ground',
+                                          'near|mobile|live|inlos|ignorefriends|ignoreself',
+                                          18, 'gray|red|orange')
+                .filter(function(m) {
+                    return Orion.Contains(m.Properties(), "(Guardian)") &&
+                           !Orion.Contains(m.Properties(), "summoned");
+                });
+
+            if (nearby.length > 0) {
+                nearby.sort(function(a, b) { return a.Distance() - b.Distance(); });
+                if (nearby[0].Serial() !== current) {
+                    current = nearby[0].Serial();
+                    break;  // verlässt nur FOLLOW-Loop → neuer Guardian wird oben gewählt
+                }
+            }
+        }
+        Orion.Wait(100); // kleine Pause
+    }
+}
+
+
+//--#Recall
+
+function RecallToHouse() {
+      var x = Player.X()
+    var y = Player.Y()
+    while (true) {
+        var RuneBooks = Orion.FindTypeEx(0x9C17, any, 'backpack', 'item');
+        var RuneBook = RuneBooks.filter(function(item) {
+            return item.Properties().toLowerCase().indexOf("maps") !== -1;
+        });
+        if (RuneBook.length) {
+            while(!Orion.GumpExists('generic', RuneBook[0].Serial())){
+            Orion.UseObject(RuneBook[0].Serial());
+            Orion.Wait(100)
+            }
+            if (Orion.WaitForGump(1400)) {
+            Orion.Wait(50)
+                var gump0 = Orion.GetGump('last');
+                if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000001F2')) {
+                    gump0.Select(Orion.CreateGumpHook(50000));
+                    Orion.Wait(100);
+                }
+            }
+            if (Orion.WaitForGump(1400)) {
+                var gump1 = Orion.GetGump('last');
+                if ((gump1 !== null) && (!gump1.Replayed()) && (gump1.ID() === '0x000001F2')) {
+                    gump1.Select(Orion.CreateGumpHook(5000));
+                    Orion.Wait(100);
+                }
+            }
+           Orion.Wait(3850)
+            if (x == Player.X() && y == Player.Y()) {
+            Orion.Wait(2500)
+            } else {
+                Orion.WarMode(0)
+                Orion.Wait(300)
+                var x = Player.X()
+                var y = Player.Y()
+                var z = Player.Z()
+                Orion.WalkTo(x, y - 2, z, 0)
+                return false;
+            }
+        }
+        if (RuneBook.length == 0) {
+            Orion.Print('No Main Runic Atlas Found')
+        }
+    }
+}
+
+function RecallToTele() {
+      var x = Player.X()
+    var y = Player.Y()
+    while (true) {
+        var RuneBooks = Orion.FindTypeEx(0x9C17, any, 'backpack', 'item');
+        var RuneBook = RuneBooks.filter(function(item) {
+            return item.Properties().toLowerCase().indexOf("maps") !== -1;
+        });
+        if (RuneBook.length) {
+            while(!Orion.GumpExists('generic', RuneBook[0].Serial())){
+            Orion.UseObject(RuneBook[0].Serial());
+           Orion.Wait(100)
+            }
+            if (Orion.WaitForGump(1400)) {
+            Orion.Wait(50)
+                var gump0 = Orion.GetGump('last');
+                if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000001F2')) {
+                    gump0.Select(Orion.CreateGumpHook(50001));
+                    Orion.Wait(100);
+                }
+            }
+            if (Orion.WaitForGump(1400)) {
+                var gump1 = Orion.GetGump('last');
+                if ((gump1 !== null) && (!gump1.Replayed()) && (gump1.ID() === '0x000001F2')) {
+                    gump1.Select(Orion.CreateGumpHook(5000));
+                    Orion.Wait(100);
+                }
+            }
+           Orion.Wait(3850)
+            if (x == Player.X() && y == Player.Y()) {
+            Orion.Wait(2500)
+            } else {
+                Orion.WarMode(0)
+                Orion.Wait(300)
+                var x = Player.X()
+                var y = Player.Y()
+                var z = Player.Z()
+                Orion.WalkTo(x, y - 2, z, 0)
+                return false;
+            }
+        }
+        if (RuneBook.length == 0) {
+            Orion.Print('No Main Runic Atlas Found')
+        }
+    }
+}
+
+function RecallToRepair() {
+      var x = Player.X()
+    var y = Player.Y()
+    while (true) {
+        var RuneBooks = Orion.FindTypeEx(0x9C17, any, 'backpack', 'item');
+        var RuneBook = RuneBooks.filter(function(item) {
+            return item.Properties().toLowerCase().indexOf("maps") !== -1;
+        });
+        if (RuneBook.length) {
+            while(!Orion.GumpExists('generic', RuneBook[0].Serial())){
+            Orion.UseObject(RuneBook[0].Serial());
+           Orion.Wait(100)
+            }
+            if (Orion.WaitForGump(1400)) {
+            Orion.Wait(50)
+                var gump0 = Orion.GetGump('last');
+                if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000001F2')) {
+                    gump0.Select(Orion.CreateGumpHook(50002));
+                    Orion.Wait(100);
+                }
+            }
+            if (Orion.WaitForGump(1400)) {
+                var gump1 = Orion.GetGump('last');
+                if ((gump1 !== null) && (!gump1.Replayed()) && (gump1.ID() === '0x000001F2')) {
+                    gump1.Select(Orion.CreateGumpHook(5000));
+                    Orion.Wait(100);
+                }
+            }
+           Orion.Wait(3850)
+            if (x == Player.X() && y == Player.Y()) {
+            Orion.Wait(2500)
+            } else {
+                Orion.WarMode(0)
+                Orion.Wait(300)
+                var x = Player.X()
+                var y = Player.Y()
+                var z = Player.Z()
+                Orion.WalkTo(x, y - 2, z, 0)
+                return false;
+            }
+        }
+        if (RuneBook.length == 0) {
+            Orion.Print('No Main Runic Atlas Found')
+        }
+    }
+}
+
+
+function RecallToSpecial(hook) {
+      var x = Player.X()
+    var y = Player.Y()
+    while (true) {
+        var RuneBooks = Orion.FindTypeEx(0x9C17, any, 'backpack', 'item');
+        var RuneBook = RuneBooks.filter(function(item) {
+            return item.Properties().toLowerCase().indexOf("maps") !== -1;
+        });
+        if (RuneBook.length) {
+            while(!Orion.GumpExists('generic', RuneBook[0].Serial())){
+            Orion.UseObject(RuneBook[0].Serial());
+            Orion.Wait(500)
+            }
+            if (Orion.WaitForGump(1400)) {
+            Orion.Wait(100)
+                var gump0 = Orion.GetGump('last');
+                if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x000001F2')) {
+                    gump0.Select(Orion.CreateGumpHook(hook));
+                    Orion.Wait(100);
+                }
+            }
+            if (Orion.WaitForGump(1400)) {
+                var gump1 = Orion.GetGump('last');
+                if ((gump1 !== null) && (!gump1.Replayed()) && (gump1.ID() === '0x000001F2')) {
+                    gump1.Select(Orion.CreateGumpHook(5000));
+                    Orion.Wait(100);
+                }
+            }
+            Orion.Wait(3200)
+            if (x == Player.X() && y == Player.Y()) {
+            Orion.Wait(2000)
+            } else {
+                Orion.WarMode(0)
+                Orion.Wait(200)
+                return false;
+            }
+        }
+        if (RuneBook.length == 0) {
+            Orion.Print('No Main Runic Atlas Found')
+        }
+    }
+}
+
+//--#Sort All
+
+function SortAll(){
+Eggs()
+Refinments()
+ThrowAwayMaps()
+ProcessEventItems()
+}
+
+function DecoEggContainer(){
+Orion.CharPrint(Player.Serial(), '88', 'Please target the container for Deco Eggs.');
+Orion.WaitForAddObject('eggs');
+if(Orion.FindObject('eggs')){
+Orion.SetGlobal('eggs', Orion.FindObject('eggs').Name())
+}else {
+Orion.SetGlobal('eggs',  '')
+}
+}
+
+function RefinmentContainer(){
+Orion.CharPrint(Player.Serial(), '88', 'Please target the container for Refinements.');
+Orion.WaitForAddObject('Refinments');
+if(Orion.FindObject('Refinments')){
+Orion.SetGlobal('refinements', Orion.FindObject('Refinments').Name())
+} else {
+Orion.SetGlobal('refinements',  '')
+}
+}
+
+function MapsContainer(){
+Orion.CharPrint(Player.Serial(), '88', 'Please target the container for your Nest Maps.');
+Orion.WaitForAddObject('maps');
+if(Orion.FindObject('maps')){
+Orion.SetGlobal('maps', Orion.FindObject('maps').Name())
+} else {
+Orion.SetGlobal('maps',  '')
+}
+}
+
+
+function Eggs() {
+Orion.ClearJournal()
+       var DecoEgg = Orion.FindTypeEx(any, any, backpack, ' ', ' ', ' ', true).filter(function(part) {
+                return (Orion.Contains(part.Properties(), "Dragon Egg") && !Orion.Contains(part.Properties(), "Mature Umbrascale Dragon Egg"));
+            });
+        while (DecoEgg.length > 0) {
+            var egg = Orion.GetGlobal('eggs')
+            if (!egg) {
+             DecoEggContainer()
+            } else if(egg && !Orion.FindObject('eggs')){
+            RecallToHouse();
+            }
+            var container = Orion.FindObject('eggs')
+            if(Orion.GetDistance(Orion.FindObject('eggs').Serial()) > 1){
+            var x = container.X()
+            var y = container.Y()
+            var z = container.Z()
+            Orion.WalkTo(x, y, z, 1)
+            }
+            Orion.DragItem(DecoEgg[0].Serial())
+            Orion.Wait(100)
+            Orion.DropDraggedItem(Orion.FindObject('eggs').Serial());
+            Orion.Wait(1000)
+            var DecoEgg = Orion.FindTypeEx(any, any, backpack, ' ', ' ', ' ', true).filter(function(part) {
+                return (Orion.Contains(part.Properties(), "Dragon Egg") && !Orion.Contains(part.Properties(), "Mature Umbrascale Dragon Egg"));
+            });
+            if(Orion.InJournal('cannot hold more')){
+            Orion.ClearJournal()
+            DecoEggContainer()
+            }
+        }
+    }
+function Refinments() {
+Orion.ClearJournal()
+        var Refinments = Orion.FindTypeEx(any, any, backpack, ' ', ' ', ' ', true).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Reinforced"));
+        });
+        while (Refinments.length > 0) {
+     var refinements = Orion.GetGlobal('refinements')
+            if (!refinements) {
+             RefinmentContainer()
+            } else if(refinements && !Orion.FindObject('Refinments')){
+            RecallToHouse();
+            }
+            var container = Orion.FindObject('Refinments')
+            if(Orion.GetDistance(Orion.FindObject('Refinments').Serial()) > 1){
+            var x = container.X()
+            var y = container.Y()
+            var z = container.Z()
+            Orion.WalkTo(x, y, z, 1)
+            }
+            Orion.DragItem(Refinments[0].Serial())
+            Orion.Wait(100)
+            Orion.DropDraggedItem(Orion.FindObject('Refinments').Serial());
+            Orion.Wait(1000)
+        var Refinments = Orion.FindTypeEx(any, any, backpack, ' ', ' ', ' ', true).filter(function(part) {
+            return (Orion.Contains(part.Properties(), "Reinforced"));
+        });
+            if(Orion.InJournal('cannot hold more')){
+            Orion.ClearJournal()
+ RefinmentContainer()
+            }
+        }
+}
+
+
+function BlockedMap() {
+ if(!Orion.FindObject('Refinments')){
+            RecallToHouse();
+            }
+            var container = Orion.FindObject('Refinments')
+            if(Orion.GetDistance(Orion.FindObject('Refinments').Serial()) > 1){
+            var x = container.X()
+            var y = container.Y()
+            var z = container.Z()
+            Orion.WalkTo(x, y, z, 1)
+            }
+            while(!Orion.Dragging()){
+            Orion.DragItem(Orion.FindObject('tmap').Serial())
+            Orion.Wait(400)
+            }
+            while(Orion.Dragging()){
+            Orion.DropDraggedItem(Orion.FindObject('Refinments').Serial());
+            Orion.Wait(100)
+            }
+}
+
+
+
+
+function ThrowAwayMaps() {
+Orion.ClearIgnoreList('map')
+    var maps = Orion.FindTypeEx('0x14EB', any, 'backpack', ' ', ' ', ' ', true).filter(function(part){
+        return Orion.Contains(part.Properties(), "Completed By");
+    });
+    var trash = Orion.FindTypeEx(any, any, ground, 'any', '24').filter(function(part){
+        return Orion.Contains(part.Properties(), "Trash Barrel");  });
+    while (maps.length && trash.length) {
+            if(Orion.GetDistance(trash[0].Serial()) > 2){
+            var x = trash[0].X()
+            var y = trash[0].Y()
+            var z = trash[0].Z()
+            Orion.WalkTo(x, y, z, 1, 15)
+            }
+        Orion.DragItem(maps[0].Serial(), 1);
+        Orion.Wait('100');
+        Orion.DropDraggedItem(trash[0].Serial());
+        Orion.Wait('1000');
+        var maps = Orion.FindTypeEx('0x14EB', any, 'backpack', ' ', ' ', ' ', true).filter(function(part) {
+            return Orion.Contains(part.Properties(), "Completed By");
+        });
+    }
+}
+
+function ProcessEventItems() {
+    Orion.ClearJournal()
+        var EventItems = Orion.FindTypeEx(any, any, 'backpack', 'item|recurse');
+    var matchingItems = EventItems.filter(function(item) {
+        return item.Name().indexOf("Of The Umbrascale") !== -1; // ES5-compatible filtering
+    });
+    if(matchingItems.length){
+     var crystall = Orion.FindTypeEx('0x468A',0x0A29, 'ground', 'near', '25')
+        if (crystall.length == 0) {
+        RecallToTele();
+        }
+        var crystall = Orion.FindTypeEx('0x468A',0x0A29, 'ground', 'near', '25')
+        if (crystall.length) {
+            var Ball = Orion.FindObject(crystall[0].Serial());
+            var x1 = Ball.X()
+            var y1 = Ball.Y()
+            var z1 = Ball.Z()
+            Orion.WalkTo(x1, y1, z1, 1, 15);
+                Orion.Say('trinsic mint')
+        }
+        Orion.Wait(800)
+    Orion.WalkTo(1883 + Orion.Random(-2, 2), 2720 + Orion.Random(-1, 2), 20, 0)
+    Orion.IgnoreReset();
+    Orion.ClearIgnoreList('Umbrascale')
+    // Find all items in the backpack matching "Riftborne"
+    var EventItems = Orion.FindTypeEx(any, any, 'backpack', 'item|recurse');
+    var matchingItems = EventItems.filter(function(item) {
+        return item.Name().indexOf("Of The Umbrascale") !== -1; // ES5-compatible filtering
+    });
+    // Send notifications for the total number of drops in the backpack
+    var currentDrops = matchingItems.length;
+    var trader = FindTrader();
+    if (FindTrader()) {
+        var x = trader.X()
+        var y = trader.Y()
+        var z = trader.Z()
+       // HandinginDrops(currentDrops); // Existing private notification
+        //DiscordPublicNotify(currentDrops); // New public notification
+        Orion.WalkTo(x, y + 2, z, 2, 0)
+        // Interact with the vendor
+        Orion.UseObject(trader.Serial());
+        Orion.Wait(200); // Short delay to allow vendor interaction
+
+        // Process items until no more matching items are found
+        while (true && !Player.Dead()) {
+            // Recheck items in the backpack
+            var EventItems = Orion.FindTypeEx(any, any, 'backpack', 'item|recurse');
+            var matchingItems = EventItems.filter(function(item) {
+                return item.Name().indexOf("Of The Umbrascale") !== -1; // ES5-compatible filtering
+            });
+
+            // If no matching items are found, exit the loop
+            if (matchingItems.length === 0) {
+                Orion.CharPrint('self', '00FF00', "No more Event Items items found.");
+                break;
+            }
+
+            // Process the gump
+            if (Orion.WaitForGump(1000)) {
+            Orion.Wait(50);
+                var gump0 = Orion.GetGump('last');
+                if ((gump0 !== null) && (!gump0.Replayed()) && (gump0.ID() === '0x00002336')) {
+                    gump0.Select(Orion.CreateGumpHook(100));
+                    Orion.Wait(100);
+                }
+            } else {
+                Orion.CharPrint('self', 'FF0000', "Gump not found. Retrying...");
+                Orion.UseObject(trader.Serial());
+            }
+
+            // Ensure the loop doesn't consume excessive resources
+            Orion.Wait(50);
+            if (Orion.InJournal('cap for turn in')) {
+                addHalloweenMessage('You are at your Turn-In cap'); // Send to the gump
+                Orion.Terminate('all')
+            }
+        }
+    }
+
+    Orion.Print("Vendor interaction completed.");
+}}
+
+function FindTrader() {
+    const searchRadius = 15;
+    const mobilesInRange = Orion.FindTypeEx('any', 'any', ground, 'mobile|ignoreself|live', searchRadius, 'invulnerable', false, 'AutoTargetIgnore');
+    const eventMobilesInRange = mobilesInRange.filter(function(mobile) {
+        const props = mobile.Properties();
+        return Orion.Contains(props, "Treasures Of The Draconic Awakening Trader");
+    }); // set to any item of colour but could be any graphic type of any colour etc
+
+    return eventMobilesInRange.length > 0 ? eventMobilesInRange[0] : null;
+}
+//--#Repair
+function RepairEquippedItems() {
+Orion.SetGlobal('repair', 0)
+    var repair = false;
+    var repairThreshold = 30;
+    var layers = ["Arms", "Bracelet", "Cloak", "Earrings", "Gloves", "Helmet", "InnerTorso", "LeftHand", "MidTorso", "Necklace", "Pants", "RightHand", "Ring", "Robe", "Shoes", "Talisman", "Waist"];
+
+    layers.forEach(function(layer) {
+        var item = Orion.ObjAtLayer(layer);
+        if (!item) {
+            // No item equipped.
+            return;
+        }
+        var properties = item.Properties();
+        if (!Orion.Contains(properties, "Durability")) {
+            // Item has no durability.
+            return;
+        }
+        var matches = /Durability (\d+)\s\/\s(\d+)/.exec(properties);
+        if (matches && matches.length > 2 && parseInt(matches[1]) <= repairThreshold) {
+            // Item needs repair.
+            Orion.CharPrint(self, 0x04F2, item.Name() + ' is at ' + parseInt(matches[1]) + ' Dura');
+            var bench = Orion.FindTypeEx('0xA278|0xA277|0xA27F|0xA27E', any, ground, '', 28)
+            Orion.Terminate('FarmDraconic')
+            if (bench.length == 0) {       
+                RecallToRepair()
+            } 
+            RepairItem(item);
+          }
+    });
+}
+
+function RepairItem(itemObj) {
+    var bench = Orion.FindTypeEx('0xA278|0xA277|0xA27F|0xA27E', any, ground, '', 28)
+    if (bench.length) {
+        var repairBenchSerial = bench[0].Serial()
+        var X = bench[0].X()
+        var Y = bench[0].Y()
+        var Z = bench[0].Z()
+        Orion.WalkTo(X, Y, Z, 1)
+       while(Orion.GetDistance(repairBenchSerial) > 1) {
+            Orion.WalkTo(X, Y, Z, 1)
+        }
+
+        var serialOfItemToRepair = itemObj.Serial();
+        Orion.CharPrint(self, 25, "Repairing item: " + itemObj.Name());
+
+        var repairGumpOptions = [2001, 2002, 2003, 2006, 2010, 2011, 2009];
+
+        for (var i = 0; i < repairGumpOptions.length; ++i) {
+            var useRepairOption = true;
+            while (useRepairOption) {
+                Orion.ClearJournal();
+                UseRepairBenchOption(repairBenchSerial, repairGumpOptions[i], serialOfItemToRepair);
+                Orion.Wait(600);
+                if (Orion.InJournal("You cannot repair that item with this type of repair contract.")) {
+                    // Wrong repair contract. Move on to the next.
+                    useRepairOption = false;
+                } else if (Orion.InJournal("You repair the item")) {
+                    return;
+                }
+                if (Orion.InJournal("fail to repair the item")) {
+                    useRepairOption = true;
+                }
+            }
+        }
+    }
+    if (bench.length == 0) {
+        Orion.Print('No Bench nearby')
+    }
+}
+
+function UseRepairBenchOption(repairBenchSerial, repairOption, serialOfItemToRepair) {
+ while(!Orion.GumpExists('generic', repairBenchSerial))
+        {
+        Orion.UseObject(repairBenchSerial);
+        Orion.Wait(500)
+        }
+    if (Orion.WaitForGump(1000)) {
+        var gump0 = Orion.GetGump("last");
+        if (gump0 !== null && !gump0.Replayed() && gump0.ID() === "0x00002415") {
+            Orion.WaitTargetObject(serialOfItemToRepair);
+            gump0.Select(Orion.CreateGumpHook(repairOption));
+            Orion.Wait(100);
+        }
+    }
+}
+
+//--#Gump
+
+function updateHalloweenDropGump() {
+     if(!Orion.ScriptRunning('AlwaysRunning')){
+    Orion.ToggleScript('AlwaysRunning')
+    }
+    // Create or update the gump
+    var g = Orion.CreateCustomGump(15);
+    var x = 500; // Gump X position
+    var y = 55; // Gump Y position
+    g.Clear();
+
+    g.SetCallback('Callback');
+    // Add a background resizepic
+    var gumpWidth = 280; // Adjusted width for two columns
+    var gumpHeight = 425;
+    g.AddResizepic(x, y, '0x1400', gumpWidth, gumpHeight);
+
+    // Add Data Tracking - Duration, Total Drops, Total Deaths
+    var totalDrops = Shared.GetVar('totalDrops') || 0;
+     var nests = Shared.GetVar('nests') || 0;
+    var deathCounter = Shared.GetVar('deathCounter') || 0;
+    var elapsedTime = Shared.GetVar('elapsedTime') || "0h 0m 0s";
+
+   
+
+    // Add the item tilepic and drop counter text
+    g.AddTilePic(x + 20, y + 50, 0xB2D3, 0x0AD7);
+
+    // Display Player Name and Shard
+    var playerName = Player.Name();
+    var shardName = Orion.ShardName();
+    var tithing = Player.TithingPoints()
+    g.AddText(x + gumpWidth - 220, y + 10, '1153', "JoOs Nests Farmer");
+    g.AddText(x + gumpWidth - 220, y + 20, '1153', "-------------------------------");
+    g.AddText(x + gumpWidth - 205, y + 30, '1153', "Player: " + playerName);
+    g.AddText(x + gumpWidth - 205, y + 45, '1153', "Tithing Points: " + tithing);
+    g.AddText(x + gumpWidth - 205, y + 60, '1153', "Shard: " + shardName);
+    g.AddText(x + gumpWidth - 205, y + 75, '1153', "Deaths: " + deathCounter);
+    g.AddText(x + gumpWidth - 205, y + 90, '1153', "Total Drops: " + totalDrops);
+    g.AddText(x + gumpWidth - 205, y + 105, '1153', "Nests Opened This Run: " + nests);
+    g.AddText(x + gumpWidth - 205, y + 120, '15', "Run Time: " + elapsedTime);
+    
+    // First column of buttons
+    var buttonY = y + 145;
+    var buttonX = x + 10;
+    var buttonHeight = 16;
+    var egg = Orion.GetGlobal('eggs') || 'Not Selected'
+     var refinements = Orion.GetGlobal('refinements') || 'Not Selected'
+      var maps = Orion.GetGlobal('maps') || 'Not Selected'
+
+    var buttonLabels = [{
+            label: "Start/Stop Farming",
+            tooltip: "Startes or Stopes Nests Farmer"
+        },
+        {
+            label: "Trade-In All Drops",
+            tooltip: "Activates automated drop hand-ins"
+        },
+        {
+            label: "Repair what I'm wearing",
+            tooltip: "Stand next to a RepairBench and press button"
+      },
+         {
+            label: "Reset Statistics",
+            tooltip: "Resets all Statistics"
+        },
+        {
+            label: "Set Deco Egg Container: " + egg,
+            tooltip: "Set Deco Egg Container"
+        },
+        {
+            label: "Set Refinement Container: " + refinements,
+            tooltip: "Set Refinement Container"
+        },
+        {
+            label: "Set Map Container: " + maps,
+            tooltip: "Set Nest Map Container"
+        },
+          {
+            label: "Sort All",
+            tooltip: "Sort Deco Eggs, Refinemnts, Maps and Turn in Points"
+        },
+        {
+            label: "Show Nest Counters",
+            tooltip: "Show Nest Counters"
+        },
+    ];
+
+    for (var i = 0; i < buttonLabels.length; i++) {
+        var buttonId = i + 1;
+        var buttonLabel = buttonLabels[i];
+        g.AddButton(buttonId, buttonX, buttonY, '0x845', '0x846', '0x845', '0x0000');
+        g.AddText(buttonX + 20, buttonY - 4, '1153', buttonLabel.label);
+        g.AddTooltip(buttonLabel.tooltip);
+        buttonY += buttonHeight;
+    }
+
+    // Second column of buttons
+    var secondColumnX = x + gumpWidth / 2 + 10; // Start of second column
+    buttonY = y + 135; // Reset Y position for second column
+
+    var row2buttonLabels = [
+        //  { label: "Enable Auto Repair", tooltip: "Toggle auto repair functionality" },
+        // { label: "View Logs", tooltip: "Open logs for review" },
+        // { label: "Clear Drops", tooltip: "Clear drop counter" },
+        // { label: "Toggle Safe Mode", tooltip: "Enable or disable safe mode" },
+        //  { label: "Stop All	", tooltip: "Stop All Scripts" }
+    ];
+
+    for (var j = 0; j < row2buttonLabels.length; j++) {
+        var buttonId = 100 + j + 1; // Unique button IDs
+        var buttonLabel = row2buttonLabels[j];
+        g.AddButton(buttonId, secondColumnX, buttonY, '0x837', '0x845', '0x838', '0x0000');
+        g.AddText(secondColumnX + 15, buttonY - 5, '1153', buttonLabel.label);
+        g.AddTooltip(buttonLabel.tooltip);
+        buttonY += buttonHeight;
+    }
+
+    // Original toggle buttons below both columns
+    buttonY = y + gumpHeight - 130;
+    buttonX = x + 10;
+
+
+//       var isFelEnabled = Shared.GetVar('Fel') || false; // Default to false
+  //      g.AddButton(20, buttonX, buttonY, isFelEnabled ? '0x845' : '0x837', '0x845', '0x838', '0x0000');
+ //       g.AddText(buttonX + 18, buttonY - 5, isFelEnabled ? '0x0022' : '0x0034', "Farm Fel " + (isFelEnabled ? "ON" : "OFF"));
+
+ //    buttonY += 15;
+
+    // Loot Eggs
+     var isEggsEnabled = Shared.GetVar('Egg') || false;
+    g.AddButton(21, buttonX, buttonY, isEggsEnabled ? '0x845' : '0x845', '0x846', '0x845', '0x0000');
+     g.AddText(buttonX + 18, buttonY - 5, isEggsEnabled ? '0x0022' : '0x0034', "Loot All Deco Eggs " + (isEggsEnabled ? "ON" : "OFF"));
+
+//    buttonY += 15;
+
+//     // Loot Eggs
+ //     var isMapEnabled = Shared.GetVar('Map') || false;
+//     g.AddButton(22, buttonX, buttonY, isMapEnabled ? '0x845' : '0x837', '0x845', '0x838', '0x0000');
+//      g.AddText(buttonX + 18, buttonY - 5, isMapEnabled ? '0x0022' : '0x0034', "Loot Nest Maps " + (isMapEnabled ? "ON" : "OFF"));
+
+    //	buttonY += 20;
+    // minimise gump 
+    //  g.AddButton(23, buttonX, buttonY, Close Gump ? '0x845' : '0x837', '0x845', '0x838', '0x0000');
+    //   g.AddText(buttonX + 30, buttonY - 5, isChivCastingEnabled ? '0x0022' : '0x0034', "Cast Consecrate Wep " + (isChivCastingEnabled ? "ON" : "OFF"));
+
+    // Message section
+    var messageX = x + 20;
+    var messageY = y + gumpHeight - 100;
+    g.AddResizepic(messageX - 10, messageY - 10, '0x13EC', gumpWidth - 15, 100);
+    g.AddText(messageX, messageY - 10, '1153', "Messages:");
+
+    var messages = Shared.GetArray('HalloweenMessages') || [];
+    for (var m = 0; m < messages.length; m++) {
+        g.AddText(messageX, messageY + (15 * (m + 0.5)), '1153', messages[m]);
+    }
+
+    g.Update();
+    if (!Player.Dead()) {
+       var isFelEnabled = Shared.GetVar('Fel') || false; // Default to false
+            if (isFelEnabled == true) {
+                if (Orion.GetGlobal('Fel') != 0) {
+                    Orion.SetGlobal('Fel', 1)
+                }
+            }
+            if (isFelEnabled == false) {
+                if (Orion.GetGlobal('Fel') != 1) {
+                    Orion.SetGlobal('Fel', 0)
+                }
+            }
+    }
+}
+
+
+function HandinginDrops(currentDrops) {
+    var bot = "https://discord.com/api/webhooks/1425616766809145364/PvRvQC9Sm-PdWbT9b0SZgNACvr0B6yec8pCWZCH95LzQRMdtYsW5JF0G8LPv8L5_qbwk"; // Webhook URL
+    var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
+    var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve the total deaths
+    var elapsedTime = Shared.GetVar('elapsedTime') || "0h 0m 0s"; // Retrieve the total runtime
+    var playerSerial = Player.Serial(); // Get the player's serial
+
+    var message = Player.Name() + " @here :no_entry: " + Orion.ShardName() +
+        " :no_entry: Total Drops in Backpack: " + currentDrops +
+        " | Total Overall Drops: " + totalDrops +
+        " | Total Deaths: " + deathCounter +
+        " | Total Runtime: " + elapsedTime +
+        " | Player Serial: " + playerSerial;
+    var paramText = "content=";
+
+    // Send the POST request to Discord
+    Orion.HttpPost(bot, paramText + encodeURIComponent(message));
+}
+
+function DiscordPublicNotify(currentDrops) {
+    var bot = "https://discord.com/api/webhooks/1390568688318681180/0xfBBZYQHg6A56GXNEBiYFDT8iqGm3kpPtkGFJM39SZ7pKs36pcYP8NwUZqM1HZwr27i"; // Public Webhook URL
+    var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
+    var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve death counter
+    var shardName = Orion.ShardName(); // Shard name
+    var playerSerial = Player.Serial(); // Player serial
+    var elapsedTime = "N/A";
+
+    // Calculate elapsed time if startTime exists
+    var startTime = Shared.GetVar('startTime');
+    if (startTime) {
+        var now = new Date().getTime();
+        var elapsed = now - startTime;
+        var hours = Math.floor(elapsed / (1000 * 60 * 60));
+        var minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+        elapsedTime = hours + "h " + minutes + "m " + seconds + "s";
+    }
+
+    // Prepare the message
+    var message = "Player: **" + Player.Name() + "**\n" +
+        "Shard: **" + shardName + "**\n" +
+        //        "Serial: **" + playerSerial + "**\n" +
+        "Just Handed in a Whopping: **" + currentDrops + "**\n" +
+        "Since pressing play, has walked away with: **" + totalDrops + "**\n" +
+        "and gained: **" + deathCounter + " Deathrobes**\n";
+    //          "Elapsed Time: **" + elapsedTime + "**";
+
+    // Send the POST request to the public Discord webhook
+    Orion.HttpPost(bot, "content=" + encodeURIComponent(message));
+}
+
+
+function Callback() {
+    var buttonId = CustomGumpResponse.ReturnCode();
+
+    switch (buttonId) {
+        case 20:
+            var isFelEnabled = Shared.GetVar('Fel') || false; // Default to false
+            Shared.AddVar('Fel', !isFelEnabled); // Toggle state
+            Orion.Print("Farm in Fel " + (!isFelEnabled ? "ON" : "OFF"));
+            break;
+        case 21: // Toggle Auto Drop Handin
+            var isEggsEnabled = Shared.GetVar('Egg') || false;
+            Shared.AddVar('Egg', !isEggsEnabled); // Toggle state
+            Orion.Print("Loot All Deco Eggs " + (!isEggsEnabled ? "ON" : "OFF"));
+            break;
+
+        case 22: // Toggle Casting Chiv Spells
+          var isMapEnabled = Shared.GetVar('Map') || false;
+            Shared.AddVar('Map', !isMapEnabled); // Toggle state
+            Orion.Print("Loot Nest Maps " + (!isMapEnabled ? "ON" : "OFF"));
+            break;
+
+            // Handle buttons
+        case 0:
+            return;
+        case 1:
+            if(Orion.ScriptRunning('ShowMapInfo')){
+            Orion.Terminate('all', 'AlwaysRunning')
+            }
+            Orion.ToggleScript('ShowMapInfo', true)
+            break;
+        case 2:
+         enableDropHandin(); 
+            break;
+        case 3:
+          RepairEquippedItems()
+            break;
+        case 4:
+         	ResetStatistics()
+			    updateHalloweenDropGump();   
+            break;
+        case 5:
+         DecoEggContainer() 
+            break;
+        case 6:
+            RefinmentContainer()   
+            break;
+        case 7:
+        MapsContainer()
+            break;
+        case 8:
+        SortAll()
+            break;
+            case 9:
+         ShowNestCounters()
+            break;
+        default:
+            Orion.CharPrint('self', '0000FF', "No valid button pressed.");
+    }
+        updateHalloweenDropGump();
+}
+
+function ResetStatistics(){
+Shared.AddVar('deathCounter', '0')
+ Shared.AddVar('startTime', new Date().getTime())
+ Shared.AddVar('totalDrops', '0')
+ Shared.AddVar('nests', '0')
+}
+
+
+function updateElapsedTime() {
+    var startTime = Shared.GetVar('startTime');
+    if (startTime) {
+        var now = new Date().getTime();
+        var elapsed = now - startTime;
+        var hours = Math.floor(elapsed / (1000 * 60 * 60));
+        var minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+        var formattedTime = hours + "h " + minutes + "m " + seconds + "s";
+
+        Shared.AddVar('elapsedTime', formattedTime); // Store the calculated time
+        updateHalloweenDropGump(); // Update the gump with the new time
+    }
+}
+
+function incrementTotalDrops() {
+    var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve or initialize to 0
+    totalDrops++; // Increment the counter
+    Shared.AddVar('totalDrops', totalDrops); // Save the updated value back to shared storage
+
+    // Update the Gump and Overhead Display
+    updateHalloweenDropGump();
+    displayOverCharStats();
+}
+
+// Function to start runtime counter
+function startRuntimeCounter() {
+    if (!Shared.GetVar('startTime')) {
+        Shared.AddVar('startTime', new Date().getTime());
+    }
+    updateHalloweenDropGump();
+}
+
+// Function to increment death counter
+function incrementDeathCounter() {
+    var deathCounter = Shared.GetVar('deathCounter') || 0; // Default to 0 if undefined
+    deathCounter++; // Increment the value
+    Shared.AddVar('deathCounter', deathCounter); // Update the Shared variable
+    updateHalloweenDropGump(); // Update the gump (optional, based on your setup)
+}
+// Example functions for each button action
+
+//--#Insure
+
+function InsureItems() {
+    while (true) {
+        var items = Orion.FindTypeEx('any|!0x14FB', 'any', 'backpack', -1, -1, -1, -1, 'insure').filter(function(item) {
+            return !Orion.Contains(item.Properties(), "Blessed|Insured|Cursed") && ((Orion.Count(item.Graphic(), item.Color(), backpack) != item.Count()) || item.Count() == 1) && !Orion.Contains(item.Name(), "Of The Umbrascale")
+        });
+        if (items.length > 0) {
+            Orion.Print('Insuring Item: ' + items[0].Name());
+            Orion.RequestContextMenu('self');
+            Orion.WaitContextMenuID('self', 418);
+            Orion.WaitForTarget(1000)
+            Orion.TargetObject(items[0].Serial());
+            Orion.Wait(500)
+            if (Orion.InJournal('cannot insure that')) {
+                Orion.AddIgnoreListObject('insure', items[0].Serial())
+                Orion.ClearJournal('cannot insure that')
+            }
+            if (Orion.WaitForTarget(1000))
+                Orion.CancelTarget()
+        }
+        Orion.Wait(200)
+         var item = Orion.FindTypeEx('any', 'any', 'backpack', -1, -1, -1, -1, 'insure').filter(function (part) {
+            return Orion.Contains(part.Name(), "Of The Umbrascale") && !Orion.Contains(part.Properties(), "Insured");
+        });        
+        if (item.length) {
+         Orion.Print('Insuring Item: ' + item[0].Name());
+            Orion.RequestContextMenu('self');
+            Orion.WaitContextMenuID('self', 418);
+            Orion.WaitForTarget(1100);
+            Orion.TargetObject(item[0].Serial());
+            Orion.Wait(300)
+            while(!Orion.WaitForTarget()){
+            Orion.Wait(100)
+             Orion.CancelTarget();
+            }
+            Orion.CancelTarget();
+            Orion.Wait(300)
+            if(Orion.Contains(item[0].Properties(), "Insured") || Orion.Contains(item[0].Properties(), "Cursed")){
+            incrementTotalDrops();
+            Orion.AddIgnoreListObject('insure', item[0].Serial())
+            }
+            Orion.Wait(400)
+        }
+        Orion.Wait(100)
+    }
+}
+//--#Gump Module
+
+
+
+function getDressed() {
+    Orion.CharPrint('self', '00FF00', "Get Dressed executed!");
+    Orion.Dress('Main');
+}
+
+function enableDropHandin() {
+    Orion.CharPrint('self', '00FF00', "Enable Drop Handin executed!");
+    Orion.Exec('ProcessEventItems');
+}
+
+function tradeAllDropsToFriends() {
+    Orion.CharPrint('self', '00FF00', "Trade All Drops to Friends executed!");
+    Orion.ToggleScript('MoveEventItems');
+    addHalloweenMessage("Trading Drops - Target Player/Container"); // Send to the gump
+}
+
+function pauseAllFunctions() {
+    Orion.CharPrint('self', '00FF00', "Pause All Functions executed!");
+    Orion.PauseScript('all');
+    Orion.StopWalking()
+    addHalloweenMessage("Functions Paused"); // Send to the gump
+}
+
+function resumeAllFunctions() {
+    Orion.CharPrint('self', '00FF00', "Resume All Functions executed!");
+    Orion.ResumeScript('all');
+    addHalloweenMessage("Functions Resumed"); // Send to the gump
+}
+
+function hideEveryone() {
+    Orion.CharPrint('self', '00FF00', "Hiding All Blue Players");
+    Orion.ToggleScript('hideall2');
+    addHalloweenMessage("Hiding Everyone"); // Send to the gump
+
+}
+
+function hideall2() {
+    while (true) {
+        var peeps = Orion.FindType('any', 'any', 'ground', 'live|ignoreself', 24, "blue")
+        for (var i = 0; i < peeps.length; i++) {
+            Orion.Hide(peeps[i])
+        }
+        Orion.Wait(500);
+    }
+}
+
+function addHalloweenMessage(message) {
+    var messages = Shared.GetArray('HalloweenMessages') || [];
+    messages.push(message);
+    if (messages.length > 5) { // Limit to 5 messages
+        messages.shift();
+    }
+    Shared.AddArray('HalloweenMessages', messages);
+    updateHalloweenDropGump(); // Refresh the gump
+}
+
+function displayOverCharStats() {
+    // Retrieve Shared variables
+    var totalDrops = Shared.GetVar('totalDrops') || 0;
+    var startTime = Shared.GetVar('startTime');
+    var deathCounter = Shared.GetVar('deathCounter') || 0;
+
+    // Calculate elapsed time if startTime exists
+    var elapsedTime = "N/A";
+    if (startTime) {
+        var now = new Date().getTime();
+        var elapsed = now - startTime;
+        var hours = Math.floor(elapsed / (1000 * 60 * 60));
+        var minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+        var elapsedTime = hours + "h " + minutes + "m " + seconds + "s";
+
+    }
+
+    // Print stats over character
+    Orion.CharPrint(Player.Serial(), '1153', "Total Drops: " + totalDrops);
+    Orion.CharPrint(Player.Serial(), '1153', "Elapsed Time: " + elapsedTime);
+    Orion.CharPrint(Player.Serial(), '1153', "Deaths: " + deathCounter);
+}
+
+function setDeathCounter() {
+    if (Shared.GetVar('deathCounter') === undefined) {
+        Shared.AddVar('deathCounter', 0); // Set to 0 if undefined
+    }
+}
+
+function processItems(items, itemType, container) {
+    if (!container) {
+        Orion.Print('No valid target location. Aborting item movement.');
+        return;
+    }
+
+    if (items.length) {
+        Orion.Print('Found ' + itemType + ' item(s).');
+        for (var i = 0; i < items.length; i++) {
+            Orion.Print('Dragging ' + itemType + ' item: ' + items[i].Name());
+            Orion.DragItem(items[i].Serial(), 1);
+            Orion.Wait(500);
+            Orion.Print('Dropping ' + itemType + ' item into container.');
+            Orion.DropDraggedItem(container);
+            Orion.Wait(1000);
+        }
+    } else {
+        Orion.Print('No ' + itemType + ' items found.');
+        Orion.Terminate('MoveEventItems')
+    }
+}
+
+function MoveEventItems() {
+    Orion.Print('Starting MoveEventItems script...');
+
+    // Main loop
+    while (!Player.Dead()) {
+        // Find and process "Shattered Sanctum" items
+        var EventItems = Orion.FindTypeEx('any', 'any', 'backpack').filter(function(item) {
+            return item.Properties().indexOf('Of The Umbrascale') !== -1;
+        });
+        processItems(EventItems, 'Of The Umbrascale', getTargetLocation());
+
+        Orion.Wait(500);
+    }
+
+    Orion.Print('Ending MoveEventItems script...');
+}
+
+function getTargetLocation() {
+    Orion.Print('-1', 'Please target the container or player to move items to.');
+    Orion.WaitForAddObject('targetLocation');
+    var targetObj = Orion.FindObject('targetLocation');
+
+    if (!targetObj) {
+        Orion.Print('Invalid target. Please select a valid container or player.');
+        return null;
+    }
+    
+    if (!(targetObj.Container() || targetObj.Mobile())) {
+        Orion.Print('Invalid target. Please select a valid container or player.');
+        return null;
+    }
+    return targetObj.Serial();
+}
