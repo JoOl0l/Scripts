@@ -2321,7 +2321,7 @@ function RecallToHouse() {
       var x = Player.X()
     var y = Player.Y()
     while (true) {
-        var RuneBooks = Orion.FindTypeEx(0x9C17, 'any', 'backpack', 'item');
+        var RuneBooks = Orion.FindTypeEx(0x9C16, 'any', 'backpack', 'item');
         var RuneBook = RuneBooks.filter(function(item) {
             return item.Properties().toLowerCase().indexOf("maps") !== -1;
         });
@@ -2368,7 +2368,7 @@ function RecallToTele() {
       var x = Player.X()
     var y = Player.Y()
     while (true) {
-        var RuneBooks = Orion.FindTypeEx(0x9C17, 'any', 'backpack', 'item');
+        var RuneBooks = Orion.FindTypeEx(0x9C16, 'any', 'backpack', 'item');
         var RuneBook = RuneBooks.filter(function(item) {
             return item.Properties().toLowerCase().indexOf("maps") !== -1;
         });
@@ -2415,7 +2415,7 @@ function RecallToRepair() {
       var x = Player.X()
     var y = Player.Y()
     while (true) {
-        var RuneBooks = Orion.FindTypeEx(0x9C17, 'any', 'backpack', 'item');
+        var RuneBooks = Orion.FindTypeEx(0x9C16, 'any', 'backpack', 'item');
         var RuneBook = RuneBooks.filter(function(item) {
             return item.Properties().toLowerCase().indexOf("maps") !== -1;
         });
@@ -2463,7 +2463,7 @@ function RecallToSpecial(hook) {
       var x = Player.X()
     var y = Player.Y()
     while (true) {
-        var RuneBooks = Orion.FindTypeEx(0x9C17, 'any', 'backpack', 'item');
+        var RuneBooks = Orion.FindTypeEx(0x9C16, 'any', 'backpack', 'item');
         var RuneBook = RuneBooks.filter(function(item) {
             return item.Properties().toLowerCase().indexOf("maps") !== -1;
         });
