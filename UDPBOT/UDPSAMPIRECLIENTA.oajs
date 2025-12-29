@@ -940,7 +940,7 @@ function AutoSmartSpecial() {
 
     while (!Player.Dead()) {
         var enemies = Orion.FindTypeEx('any', 'any', 'ground', targetFlags, 3, MobNoto);
-        Orion.Print('Enemies nearby: ' + enemies.length);
+        //Orion.Print('Enemies nearby: ' + enemies.length);
 
            if (enemies.length >= 2 && !Orion.AbilityStatus('Secondary') && !Orion.SpellStatus('Onslaught') && Player.Mana() > 30) {
             Orion.UseAbility('Secondary');

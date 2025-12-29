@@ -1,6 +1,6 @@
 // ╔══════════════════════════════════════════════════════╗
 // ║                                                      ║
-// ║              🌿 NestFarmer by JoO 🌿                ║
+// ║              🌿 NestFarmer 🌿                       ║
 // ║                                                      ║
 // ║     Automated nest harvesting and farming script     ║
 // ║                                                      ║
@@ -1055,6 +1055,8 @@ function Restock() {
 
     if (Cypher.length == 0 && Cypher1.length == 0) {
         Orion.Print('No More Decryption Cypher!');
+        var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc";
+        Orion.HttpPost(bot , 'content=' + 'Terminating because we are out of Cyphers');
         Orion.Terminate('all');
         return;
     }
@@ -1077,6 +1079,8 @@ function LockerRestock()
 {
     var locker = Orion.FindTypeEx('0x4BF8|0x4BFC', 'any', 'ground', 'near', 24);
     if (!locker.length) {
+         var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc";
+        Orion.HttpPost(bot , 'content=' + 'Terminating because we are out of Maps');
         Orion.Print('No More Maps to work on');
         Orion.Terminate('all');
         return;
@@ -1085,6 +1089,8 @@ function LockerRestock()
     var container = locker[0];
     if (!container || !container.Exists()) {
         Orion.Print('Locker object invalid.');
+         var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc";
+        Orion.HttpPost(bot , 'content=' + 'Terminating because our Locker is invalid');
         Orion.Terminate('all');
         return;
     }
@@ -1125,6 +1131,8 @@ function LockerRestock()
 
                 if (result) {
                     Orion.Print('No More Maps to work on');
+                    var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc";
+                    Orion.HttpPost(bot , 'content=' + 'Terminating because we are out of usable maps');
                     Orion.Terminate('all');
                     return;
                 }
@@ -2162,18 +2170,18 @@ function AutoEverything() {
         }
 
         ///Consecrate Weapon
-        if (Orion.SkillValue('chivalry', 'base') > 1400 && weaponObject && !Player.Frozen() && Player.Hits('%') >= 50) {
-            if (!Orion.BuffExists('Consecrate Weapon') && Player.Mana() > 10) {
-            var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red').filter(function(Summon) {
-                return !Orion.Contains(Summon.Properties(), "summoned");
-            });
-                if (mobs.length > 0) {
-                    Orion.Cast('Consecrate Weapon');
-                    Orion.Wait(70);
-                }
-            }
-            Orion.Wait(20)
-        }
+       // if (Orion.SkillValue('chivalry', 'base') > 1400 && weaponObject && !Player.Frozen() && Player.Hits('%') >= 50) {
+           // if (!Orion.BuffExists('Consecrate Weapon') && Player.Mana() > 10) {
+           // var mobs = Orion.FindTypeEx('!0x033D|!0x00A4', '-1', 'ground', 'mobile|ignorefriends|inlos', 6, 'gray|criminal|orange|red').filter(function(Summon) {
+                //return !Orion.Contains(Summon.Properties(), "summoned");
+           // });
+               // if (mobs.length > 0) {
+                //    Orion.Cast('Consecrate Weapon');
+                 //   Orion.Wait(70);
+               // }
+           // }
+           // Orion.Wait(20)
+        //}
         Orion.Wait(50)
     }
 }
@@ -2684,8 +2692,8 @@ function ProcessEventItems() {
         var x = trader.X()
         var y = trader.Y()
         var z = trader.Z()
-       // HandinginDrops(currentDrops); // Existing private notification
-        //DiscordPublicNotify(currentDrops); // New public notification
+       HandinginDrops(currentDrops); // Existing private notification
+       DiscordPublicNotify(currentDrops); // New public notification
         Orion.WalkTo(x, y + 2, z, 2, 0)
         // Interact with the vendor
         Orion.UseObject(trader.Serial());
@@ -2722,6 +2730,8 @@ function ProcessEventItems() {
             Orion.Wait(50);
             if (Orion.InJournal('cap for turn in')) {
                 addHalloweenMessage('You are at your Turn-In cap'); // Send to the gump
+                var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc";
+                Orion.HttpPost(bot , 'content=' + 'Terminating because we are at our Turn in cap');
                 Orion.Terminate('all')
             }
         }
@@ -3004,13 +3014,13 @@ function updateHalloweenDropGump() {
 
 
 function HandinginDrops(currentDrops) {
-    var bot = "https://discord.com/api/webhooks/1425616766809145364/PvRvQC9Sm-PdWbT9b0SZgNACvr0B6yec8pCWZCH95LzQRMdtYsW5JF0G8LPv8L5_qbwk"; // Webhook URL
+    var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc"; // Webhook URL
     var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
     var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve the total deaths
     var elapsedTime = Shared.GetVar('elapsedTime') || "0h 0m 0s"; // Retrieve the total runtime
     var playerSerial = Player.Serial(); // Get the player's serial
 
-    var message = Player.Name() + " @here :no_entry: " + Orion.ShardName() +
+    var message = Player.Name() + " here :no_entry: " + Orion.ShardName() +
         " :no_entry: Total Drops in Backpack: " + currentDrops +
         " | Total Overall Drops: " + totalDrops +
         " | Total Deaths: " + deathCounter +
@@ -3023,7 +3033,7 @@ function HandinginDrops(currentDrops) {
 }
 
 function DiscordPublicNotify(currentDrops) {
-    var bot = "https://discord.com/api/webhooks/1390568688318681180/0xfBBZYQHg6A56GXNEBiYFDT8iqGm3kpPtkGFJM39SZ7pKs36pcYP8NwUZqM1HZwr27i"; // Public Webhook URL
+    var bot = "https://discord.com/api/webhooks/1454698995963134002/1HuHCtApNxIqDzrcIzx9ycAi3u-VrblWVBamrMyiBTTVbt3WtLlDow6ALsLtoUyrQEqc"; // Public Webhook URL
     var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
     var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve death counter
     var shardName = Orion.ShardName(); // Shard name
