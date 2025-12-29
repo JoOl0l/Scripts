@@ -1,4 +1,4 @@
-var discord = "https://discord.com/api/webhooks/1416414757849923584/EMEwzPwI43Bu1q1IMYqASR5ltNk5lv2dZoyS8Q-a6Alj-A2wP9xFnmUICYtJ0VLOWsnP"
+var discord = "https://discord.com/api/webhooks/1455029236908822786/Wsu9Nj-eiS9mUXpVpeQO9C2i4CWwDHdo7chQHW1U3YfLktoH_nWgvGPT0E8kpCVDCQ2w"
 
 
 
