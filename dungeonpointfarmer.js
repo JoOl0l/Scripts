@@ -2235,7 +2235,7 @@ function updateHalloweenDropGump() {
 
 
 function HandinginDrops(currentDrops) {
-    var bot = "https://discord.com/api/webhooks/1425616766809145364/PvRvQC9Sm-PdWbT9b0SZgNACvr0B6yec8pCWZCH95LzQRMdtYsW5JF0G8LPv8L5_qbwk"; // Webhook URL
+    var bot = "https://discord.com/api/webhooks/1455029236908822786/Wsu9Nj-eiS9mUXpVpeQO9C2i4CWwDHdo7chQHW1U3YfLktoH_nWgvGPT0E8kpCVDCQ2w"; // Webhook URL
     var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
     var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve the total deaths
     var elapsedTime = Shared.GetVar('elapsedTime') || "0h 0m 0s"; // Retrieve the total runtime
@@ -2254,7 +2254,7 @@ function HandinginDrops(currentDrops) {
 }
 
 function LetsGO() {
-    var bot = "https://discord.com/api/webhooks/1425616766809145364/PvRvQC9Sm-PdWbT9b0SZgNACvr0B6yec8pCWZCH95LzQRMdtYsW5JF0G8LPv8L5_qbwk"; // Webhook URL
+    var bot = "https://discord.com/api/webhooks/1455029236908822786/Wsu9Nj-eiS9mUXpVpeQO9C2i4CWwDHdo7chQHW1U3YfLktoH_nWgvGPT0E8kpCVDCQ2w"; // Webhook URL
   var charName = Player.Name().replace("Lady ", "");
     var charName = charName.replace("Lord ", "");
     var shardName = Orion.ShardName();
@@ -2279,7 +2279,7 @@ function LetsGO() {
 
 
 function DiscordPublicNotify(currentDrops) {
-    var bot = "https://discord.com/api/webhooks/1390568688318681180/0xfBBZYQHg6A56GXNEBiYFDT8iqGm3kpPtkGFJM39SZ7pKs36pcYP8NwUZqM1HZwr27i"; // Public Webhook URL
+    var bot = "https://discord.com/api/webhooks/1455029236908822786/Wsu9Nj-eiS9mUXpVpeQO9C2i4CWwDHdo7chQHW1U3YfLktoH_nWgvGPT0E8kpCVDCQ2w"; // Public Webhook URL
     var totalDrops = Shared.GetVar('totalDrops') || 0; // Retrieve the total drops so far
     var deathCounter = Shared.GetVar('deathCounter') || 0; // Retrieve death counter
     var shardName = Orion.ShardName(); // Shard name
